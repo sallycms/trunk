@@ -21,7 +21,7 @@ function hg($cmd) {
 // Configuration
 
 $variants = array(
-	'starterkit' => array('tests' => true, 'addons' => array('image_resize', 'import_export', 'be_search', 'metainfo', 'developer_utils', 'global_settings', 'deployer', 'realurl2', 'wymeditor')),
+	'starterkit' => array('tests' => true, 'addons' => array('image_resize', 'import_export', 'be_search', 'metainfo', 'developer_utils', 'global_settings', 'deployer', 'realurl2', 'wymeditor', 'rbac')),
 	'lite'       => array('tests' => true, 'addons' => array()),
 	'minimal'    => array('tests' => false, 'addons' => array())
 );
@@ -87,9 +87,9 @@ foreach ($variants as $name => $settings) {
 	// Create empty data dir
 
 	chdir($target);
-	@mkdir('sally/data');
+	@mkdir('data');
 	@mkdir('sally/addons');
-	file_put_contents('sally/data/empty', 'This directory is intentionally left blank. Please make sure it\'s chmod to 0777.');
+	file_put_contents('data/empty', 'This directory is intentionally left blank. Please make sure it\'s chmod to 0777.');
 
 	// Put addOns in the archive
 
