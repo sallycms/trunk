@@ -99,6 +99,9 @@ username: Username
 password: Password
 new_password: New password
 
+media: Media
+medium: Medium
+
 logged_out: not signed in
 logged_in_as: Logged in as
 
@@ -155,6 +158,7 @@ template_has_no_slots: This article cannot contain any content.
 no_modules_allowed: This slot cannot contain any content.
 category_moved: Category has been moved.
 articletype: Article type
+articletypes: Article types
 change_articletype: Change article type
 edit_contents: Edit contents
 
@@ -207,7 +211,7 @@ startpage: Startpage
 plase_enter_a_name: Please enter a name!
 configuration_updated: System configuration has been updated.
 delete_cache: Delete cache
-delete_cache_description: 'Templates and languages files will be created, article case will be deleted. The cache of the respective article will be recreated on front-end call of the article.'
+delete_cache_description: 'With this function you can clear the temporary storage holding frequently used data. The cache will be re automatically rebuilt during the next visits to your website.'
 delete_cache_message: Cache has been cleared.
 features: Features
 settings: Settings
