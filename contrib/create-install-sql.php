@@ -63,6 +63,10 @@ function textCol(Table $table, $name, $null = false) {
 	customCol($table, $name, 'TEXT '.($null ? 'NULL' : 'NOT NULL'));
 }
 
+function longtextCol(Table $table, $name, $null = false) {
+	customCol($table, $name, 'LONGTEXT '.($null ? 'NULL' : 'NOT NULL'));
+}
+
 function customCol(Table $table, $name, $def) {
 	return $table->addColumn($name, 'string', array('columndefinition' => $def));
 }
@@ -206,21 +210,9 @@ $table = createTable($schema, 'sly_slice');
 
 serialCol($table, 'id');
 stringCol($table, 'module', 64);
+longtextCol($table, 'values');
 
 $table->setPrimaryKey(array('id'));
-
-////////////////////////////////////////////////////////////////////////////////
-// sly_slice_value
-
-$table = createTable($schema, 'sly_slice_value');
-
-serialCol($table, 'id');
-intCol($table,    'slice_id');
-stringCol($table, 'finder', 50);
-textCol($table,   'value');
-
-$table->setPrimaryKey(array('id'));
-$table->addIndex(array('slice_id'), 'slice_id');
 
 ////////////////////////////////////////////////////////////////////////////////
 // sly_registry
@@ -243,7 +235,7 @@ $platforms = array(
 );
 
 $header = <<<HEADER
--- Sally Database Dump Version 0.6
+-- Sally Database Dump Version 0.7
 -- Prefix sly_
 HEADER;
 
