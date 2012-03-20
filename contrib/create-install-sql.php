@@ -210,7 +210,7 @@ $table = createTable($schema, 'sly_slice');
 
 serialCol($table, 'id');
 stringCol($table, 'module', 64);
-longtextCol($table, 'values');
+longtextCol($table, 'serialized_values');
 
 $table->setPrimaryKey(array('id'));
 
