@@ -1,0 +1,64 @@
+[
+    {
+        "name": "webvariants/babelcache",
+        "version": "v1.2.12",
+        "version_normalized": "1.2.12.0",
+        "time": "2012-03-26 15:50:28",
+        "source": {
+            "type": "hg",
+            "url": "https://bitbucket.org/webvariants/babelcache",
+            "reference": "v1.2.12"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://bitbucket.org/webvariants/babelcache/get/v1.2.12.zip",
+            "reference": "v1.2.12",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.1.0"
+        },
+        "type": "library",
+        "names": [
+            "webvariants/babelcache"
+        ],
+        "installation-source": "dist",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Christoph Mewes",
+                "email": "christoph@webvariants.de",
+                "homepage": null
+            }
+        ],
+        "description": "Generic caching library with namespace support",
+        "homepage": "http://docs.webvariants.de/babelcache/latest/",
+        "keywords": [
+            "memcache",
+            "cache",
+            "apc",
+            "caching",
+            "xcache",
+            "eaccelerator",
+            "memcached",
+            "zendserver"
+        ]
+    },
+    {
+        "name": "fabpot/yaml",
+        "version": "1.0.6",
+        "version_normalized": "1.0.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/fabpot/yaml",
+            "reference": "master"
+        },
+        "type": "library",
+        "names": [
+            "fabpot/yaml"
+        ],
+        "installation-source": "source"
+    }
+]

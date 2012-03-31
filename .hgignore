@@ -6,3 +6,11 @@ syntax:regexp
 ^\.settings/.*
 ^nbproject/.*
 ^sally/docs/.*
+^sally/vendor/\.composer/.*php$
+^sally/vendor/fabpot/yaml/doc/.*
+^sally/vendor/fabpot/yaml/test/.*
+^sally/vendor/webvariants/babelcache/\.hg.*
+^sally/vendor/webvariants/babelcache/docs/.*
+^sally/vendor/webvariants/babelcache/tests/.*
+/\.git/
+\.hg_archival.txt
