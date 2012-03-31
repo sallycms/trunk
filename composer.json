@@ -1,0 +1,23 @@
+{
+	"name": "sally/sallycms",
+	"repositories": [{
+		"type": "package",
+		"package": {
+			"name": "fabpot/yaml",
+			"version": "1.0.6",
+			"source": {
+				"url": "https://github.com/fabpot/yaml",
+				"type": "git",
+				"reference": "master"
+			}
+		}
+	}],
+	"require": {
+		"php": ">=5.2.0",
+		"fabpot/yaml": "1.*",
+		"webvariants/babelcache": "1.2.*"
+	},
+	"config": {
+		"vendor-dir": "sally/vendor"
+	}
+}

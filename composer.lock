@@ -1,0 +1,14 @@
+{
+    "hash": "511d51b0d46326149ea11abceaa49925",
+    "packages": [
+        {
+            "package": "fabpot/yaml",
+            "version": "1.0.6"
+        },
+        {
+            "package": "webvariants/babelcache",
+            "version": "v1.2.12"
+        }
+    ],
+    "aliases": []
+}
