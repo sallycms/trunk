@@ -74,7 +74,7 @@ function customCol(Table $table, $name, $def) {
 function createTable(Schema $schema, $name) {
 	$table = $schema->createTable($name);
 
-	$table->addOption('engine', 'MyISAM');
+	$table->addOption('engine', 'InnoDB');
 	$table->addOption('charset', 'utf8');
 
 	return $table;

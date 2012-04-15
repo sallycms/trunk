@@ -2,7 +2,7 @@
  * SallyCMS - JavaScript-Bibliothek
  */
 
-var sly = {};
+var sly = sly || {};
 
 (function($, sly, win, undef) {
 	/////////////////////////////////////////////////////////////////////////////
@@ -18,8 +18,15 @@ var sly = {};
 		this.url  = url;
 		this.obj  = window.open(url, name, 'width='+width+',height='+height+extra);
 
-		this.obj.moveTo(posx, posy);
-		this.obj.focus();
+		// Don't position the popup in Chrome 18.
+		//   bug details: http://code.google.com/p/chromium/issues/detail?id=114762
+		//   workaround:  http://code.google.com/p/chromium/issues/detail?id=115585
+		// Remove this once Chrome 18 is not used anymore (~ June 2012)
+
+		if (navigator.userAgent.indexOf('Chrome/18.') === -1) {
+			this.obj.moveTo(posx, posy);
+			this.obj.focus();
+		}
 
 		openPopups[name] = this;
 
@@ -474,36 +481,6 @@ var sly = {};
 		document.cookie = 'sly_modernizr='+escape(contents);
 	};
 
-	sly.addDatepickerToggler = function(picker, value) {
-		var name     = picker.attr('name');
-		var input    = $('<input type="hidden" value="" />').attr('name', (value === 0 ? '' : '_')+name);
-		var span     = $('<span class="sly-date-disabled" style="cursor:pointer">(&hellip;)</span>');
-		var checkbox = $('<input type="checkbox" value="1" class="sly-form-checkbox" />');
-
-		span.click(function() {
-			$(this).prevAll().click();
-		});
-
-		checkbox.change(function() {
-			var on = this.checked;
-
-			picker.toggle(on).attr('name', (on?'':'_')+name);
-			span.toggle(!on);
-			input.attr('name', (on?'_':'')+name);
-		});
-
-		picker.before(checkbox).after(input).after(span);
-
-		if (value !== 0) {
-			checkbox.prop('checked', true);
-			span.hide();
-		}
-		else {
-			checkbox.prop('checked', false);
-			picker.hide();
-		}
-	};
-
 	sly.initWidgets = function(context) {
 		$('.sly-widget:not(.sly-initialized)', context).each(function() {
 			var self = $(this), init = false;
@@ -525,36 +502,6 @@ var sly = {};
 				self.addClass('sly-initialized');
 			}
 		});
-	};
-
-	var catsChecked = function() {
-		var c_checked = $('#userperm_cat_all').prop('checked');
-		var m_checked = $('#userperm_media_all').prop('checked');
-		var slider    = $('#sly-page-user .sly-form .sly-form-wrapper .sly-num7');
-
-		$('#userperm_cat').prop('disabled', c_checked);
-		$('#userperm_media').prop('disabled', m_checked);
-
-		if (c_checked && m_checked)
-			slider.slideUp('slow');
-		else
-			slider.slideDown('slow');
-	};
-
-	var updateStartpageSelect = function() {
-		var isAdmin   = $('#is_admin').is(':checked');
-		var hasPerms  = $('#userperm_sprachen').val() ? true : false;
-		var list      = $('#userperm_startpage');
-		var structure = list.find('option[value=structure]');
-		var isStruct  = structure.is(':selected');
-
-		if (isAdmin || hasPerms) {
-			structure.prop('disabled', false);
-		}
-		else {
-			structure.prop('disabled', true);
-			if (isStruct) list.find('option[value=profile]').prop('selected', true);
-		}
 	};
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -620,46 +567,7 @@ var sly = {};
 			return false;
 		});
 
-		// Benutzer-Formular
-
-		if ($('#sly-page-user .sly-form').length > 0) {
-			var wrapper = $('#sly-page-user .sly-form .sly-form-wrapper');
-			var sliders = wrapper.find('.sly-num6,.sly-num7');
-
-			$('#is_admin').change(function() {
-				if ($(this).is(':checked')) {
-					$('#userperm_module').prop('disabled', true);
-					sliders.slideUp('slow');
-				}
-				else {
-					$('#userperm_module').prop('disabled', false);
-					sliders.slideDown('slow');
-					catsChecked();
-				}
-			});
-
-			catsChecked();
-			$('#userperm_cat_all, #userperm_media_all').change(catsChecked);
-
-			// init behaviour
-
-			if ($('#is_admin').is(':checked')) {
-				$('#userperm_module').prop('disabled', true);
-				sliders.hide();
-			}
-
-			if ($('#userperm_cat_all').is(':checked') && $('#userperm_media_all').is(':checked')) {
-				wrapper.find('.sly-num7').hide();
-			}
-
-			// remove structure from list of possible startpages as long as the
-			// user neither is admin nor has any language permissions
-
-			updateStartpageSelect();
-			$('#is_admin, #userperm_sprachen').change(updateStartpageSelect);
-		}
-
-		// Formularframework
+		// form framework
 
 		$('.sly-form .sly-select-checkbox-list a').live('click', function() {
 			var rel   = $(this).attr('rel');
@@ -680,15 +588,13 @@ var sly = {};
 			}
 
 			// Fallback-Implementierung für autofocus
-
 			if (!Modernizr.input.autofocus) {
 				$('*[autofocus]').focus();
 			}
 		}
 
-		// Fallback-Implementierung für type=range via jQuery UI Slider
-
-		$('input[type=range]:not(.ua-supported)').each(function() {
+		// Fallback-Implementierung für type=range via jQuery Tools Slider
+		$('input[type="range"]:not(.ua-supported)').each(function() {
 			var input  = $(this);
 			var slider = $('<div></div>').attr('id', input.attr('id') + '-slider');
 			var hidden = $('<input type="hidden" value="" />');
@@ -710,6 +616,17 @@ var sly = {};
 
 			// remove it
 			input.remove();
+		});
+
+		// Fallback-Implementierung für type=date
+		$('input[type*="date"]').slyDateTime({
+			lngNoDateSelected:   sly.locale.noDateSelected,
+			lngDeleteDate:       sly.locale.deleteDate,
+			lngClickToInputDate: sly.locale.clickToInputDate,
+			lngMonths:           sly.locale.months.join(','),
+			lngShortMonths:      sly.locale.shortMonths.join(','),
+			lngDays:             sly.locale.days.join(','),
+			lngShortDays:        sly.locale.shortDays.join(','),
 		});
 
 		// Mehrsprachige Formulare initialisieren

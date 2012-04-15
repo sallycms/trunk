@@ -161,9 +161,9 @@ class sly_Controller_Contentmeta extends sly_Controller_Content_Base {
 	}
 
 	private function moveCategory() {
-		$target = sly_post('category_id_new', 'int', 0);
-
-		if ($this->canMoveCategory()) {
+		$target = sly_post('category_id_new', 'int');
+		$user   = sly_Util_User::getCurrentUser();
+		if ($this->canMoveCategory() && sly_Util_Article::canEditArticle($user, $target)) {
 			try {
 				sly_Service_Factory::getCategoryService()->move($this->article->getCategoryId(), $target);
 
@@ -192,7 +192,8 @@ class sly_Controller_Contentmeta extends sly_Controller_Content_Base {
 	 * @return boolean
 	 */
 	protected function canConvertToStartArticle() {
-		return $this->canDoStuff('article2startpage');
+		$user = sly_Util_User::getCurrentUser();
+		return sly_Util_Article::canEditArticle($user, $this->article->getCategoryId());
 	}
 
 	/**
@@ -218,18 +219,8 @@ class sly_Controller_Contentmeta extends sly_Controller_Content_Base {
 	 * @return boolean
 	 */
 	protected function canMoveCategory() {
-		return $this->canDoStuff('moveCategory', true);
-	}
-
-	private function canDoStuff($right, $categoryOnly = false, $requireEditing = true) {
-		if ($categoryOnly && !$this->article->isStartArticle()) return false;
-
+		if (!$this->article->isStartArticle()) return false;
 		$user = sly_Util_User::getCurrentUser();
-
-		if ($requireEditing && !sly_Util_Article::canEditArticle($user, $this->article->getId())) {
-			return false;
-		}
-
-		return $user->isAdmin() || $user->hasRight('transitional', $right);
+		return $user->isAdmin() || $user->hasRight('article', 'move', sly_Authorisation_ArticleListProvider::ALL) || $user->hasRight('article', 'move', $this->article->getId());
 	}
 }
