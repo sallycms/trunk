@@ -1,10 +1,11 @@
 {
-	"name": "sally/sallycms",
+	"name": "sallycms/sallycms",
 	"repositories": [{
 		"type": "package",
 		"package": {
 			"name": "fabpot/yaml",
 			"version": "1.0.6",
+			"autoload": {"psr-0":{"sfYaml": ""}},
 			"source": {
 				"url": "https://github.com/fabpot/yaml",
 				"type": "git",
