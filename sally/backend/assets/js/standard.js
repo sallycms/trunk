@@ -594,28 +594,13 @@ var sly = sly || {};
 		}
 
 		// Fallback-Implementierung für type=range via jQuery Tools Slider
-		$('input[type="range"]:not(.ua-supported)').each(function() {
-			var input  = $(this);
-			var slider = $('<div></div>').attr('id', input.attr('id') + '-slider');
-			var hidden = $('<input type="hidden" value="" />');
-
-			// remove the old input element and replace it with a new, hidden one
-			input.after(hidden);
-			hidden.val(input.val()).attr('name', input.attr('name')).attr('id', input.attr('id'));
-
-			// create a new div that will be the slider
-			input.after(slider);
-			slider.addClass('sly-slider').slider({
-				min:    input.attr('min'),
-				max:    input.attr('max'),
-				value:  input.val(),
-				change: function(event) {
-					hidden.val(slider.slider('value'));
-				}
-			});
-
-			// remove it
-			input.remove();
+		$('input[type="range"]:not(.ua-supported)').rangeinput({
+			css: {
+				input:    'sly-range-range',
+				slider:   'sly-range-slider',
+				progress: 'sly-range-progress',
+				handle:   'sly-jqt-handle'
+			}
 		});
 
 		// Fallback-Implementierung für type=date
@@ -632,18 +617,20 @@ var sly = sly || {};
 		// run Chosen, but transform manual indentation (aka prefixing values with '&nbsp;'s)
 		// into lvl-N classes, or else the quick filter function of Chosen will not work
 		// properly.
-		var options = $('select:not(.sly-no-chosen) option'), len = options.length, i = 0, depth, option;
+		if (typeof $.fn.chosen !== 'undefined') {
+			var options = $('select:not(.sly-no-chosen) option'), len = options.length, i = 0, depth, option;
 
-		for (; i < len; ++i) {
-			option = $(options[i]);
-			depth  = option.html().match(/^(&nbsp;)*/)[0].length / 6;
+			for (; i < len; ++i) {
+				option = $(options[i]);
+				depth  = option.html().match(/^(&nbsp;)*/)[0].length / 6;
 
-			if (depth > 0) {
-				option.addClass('sly-lvl-'+depth).html(option.html().substr(depth*6));
+				if (depth > 0) {
+					option.addClass('sly-lvl-'+depth).html(option.html().substr(depth*6));
+				}
 			}
-		}
 
-		$('.sly-form-select:not(.sly-no-chosen)').data('placeholder', 'Bitte auswählen').chosen();
+			$('.sly-form-select:not(.sly-no-chosen)').data('placeholder', 'Bitte auswählen').chosen();
+		}
 
 		// Mehrsprachige Formulare initialisieren
 
@@ -698,6 +685,12 @@ var sly = sly || {};
 		$('.sly-module-select').change(function() {
 			$(this).closest('form').submit();
 		});
+
+		// toggle cache options
+		$('#sly-system-toggle-cache').click(function() {
+			$('#sly-form-system-caches p').slideToggle();
+			return false;
+		})
 
 		// use ajax to install/activate addOns
 		var errorHider = null;
