@@ -3,7 +3,7 @@
         "name": "webvariants/babelcache",
         "version": "v1.2.12",
         "version_normalized": "1.2.12.0",
-        "time": "2012-03-26 17:50:28",
+        "time": "2012-03-26 21:50:28",
         "source": {
             "type": "hg",
             "url": "https://bitbucket.org/webvariants/babelcache",
@@ -19,9 +19,6 @@
             "php": ">=5.1.0"
         },
         "type": "library",
-        "names": [
-            "webvariants/babelcache"
-        ],
         "installation-source": "dist",
         "license": [
             "MIT"
@@ -56,9 +53,6 @@
             "reference": "master"
         },
         "type": "library",
-        "names": [
-            "fabpot/yaml"
-        ],
         "installation-source": "source",
         "autoload": {
             "psr-0": {

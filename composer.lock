@@ -10,5 +10,6 @@
             "version": "v1.2.12"
         }
     ],
+    "packages-dev": null,
     "aliases": []
 }
