@@ -1,9 +1,13 @@
 {
-    "hash": "de3a741f675a13bcbf47ce9febbbefdb",
+    "hash": "4e70cc3ee8b2edd1ae5f227ed8573e2b",
     "packages": [
         {
             "package": "fabpot/yaml",
             "version": "1.0.6"
+        },
+        {
+            "package": "leafo/lessphp",
+            "version": "0.3.4"
         },
         {
             "package": "webvariants/babelcache",

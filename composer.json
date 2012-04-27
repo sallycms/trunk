@@ -12,10 +12,23 @@
 				"reference": "master"
 			}
 		}
+	}, {
+		"type": "package",
+		"package": {
+			"name": "leafo/lessphp",
+			"version": "0.3.4",
+			"autoload": {"classmap": "./"},
+			"source": {
+				"url": "https://github.com/leafo/lessphp",
+				"type": "git",
+				"reference": "master"
+			}
+		}
 	}],
 	"require": {
 		"php": ">=5.2.0",
 		"fabpot/yaml": "1.*",
+		"leafo/lessphp": "0.3.*",
 		"webvariants/babelcache": "1.2.*"
 	},
 	"config": {
