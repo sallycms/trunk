@@ -1,5 +1,13 @@
 {
 	"name": "sallycms/sallycms",
+	"description": "Content Management System for professionals",
+	"keywords": ["cms", "php", "mysql"],
+	"authors": [{
+		"name": "webvariants GbR",
+		"homepage": "http://www.webvariants.de/"
+	}],
+	"homepage": "http://www.sallycms.de/",
+	"license": "MIT",
 	"repositories": [{
 		"type": "package",
 		"package": {
@@ -30,6 +38,11 @@
 		"fabpot/yaml": "1.*",
 		"leafo/lessphp": "0.3.*",
 		"webvariants/babelcache": "1.2.*"
+	},
+	"suggest": {
+		"sallycms/be-search": "Provides more fine grained navigation option for the backend.",
+		"sallycms/import-export": "Provides file and database backup and restore capabilities.",
+		"sallycms/image-resize": "Provides URL-based resizing of images."
 	},
 	"config": {
 		"vendor-dir": "sally/vendor"
