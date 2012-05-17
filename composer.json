@@ -26,7 +26,7 @@
 		}
 	}],
 	"require": {
-		"php": ">=5.2.0",
+		"php": ">=5.2.1",
 		"fabpot/yaml": "1.*",
 		"leafo/lessphp": "0.3.*",
 		"webvariants/babelcache": "1.2.*"
