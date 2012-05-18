@@ -8,6 +8,11 @@
 RewriteEngine On
 # RewriteBase /
 
+# Don't allow access to certain files
+<FilesMatch "^((composer\.(json|lock))|version|LICENSE)$">
+	Deny from all
+</FilesMatch>
+
 # Single-Domain
 # RewriteCond %{HTTP_HOST} ^example\.de$
 # RewriteRule ^(.*)$ http://www.example.de/$1 [R=301,L]
