@@ -1,8 +1,7 @@
 PROJECT_NAME     = "SallyCMS"
 PROJECT_NUMBER   = "Version X"
 OUTPUT_DIRECTORY = ./doxygen/
-INPUT            = ../core/lib/ ../core/functions/
-EXCLUDE          = ../core/lib/Scaffold/ ../core/lib/sfYaml/ ../core/lib/PEAR/ ../core/lib/babelcache/
+INPUT            = ../core/lib/ ../backend/lib/ ../frontend/lib/
 
 # Einstellungen, die vom Standard abweichen oder wichtig sind
 
