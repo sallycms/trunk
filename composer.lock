@@ -1,5 +1,5 @@
 {
-    "hash": "c9ee37c388c5e0e038ab476c3eb54494",
+    "hash": "647ea2143183562d2f363499be4517e7",
     "packages": [
         {
             "package": "fabpot/yaml",
@@ -7,7 +7,8 @@
         },
         {
             "package": "leafo/lessphp",
-            "version": "0.3.4"
+            "version": "dev-master",
+            "source-reference": "e0b199efdda5f0a09c979e91f95c622ae48e173a"
         },
         {
             "package": "webvariants/babelcache",
@@ -19,7 +20,7 @@
 
     ],
     "minimum-stability": "dev",
-    "stability-flags": [
-
-    ]
+    "stability-flags": {
+        "leafo/lessphp": 20
+    }
 }

@@ -21,23 +21,11 @@
 				"reference": "master"
 			}
 		}
-	}, {
-		"type": "package",
-		"package": {
-			"name": "leafo/lessphp",
-			"version": "0.3.4",
-			"autoload": {"classmap": "./"},
-			"source": {
-				"url": "https://github.com/leafo/lessphp",
-				"type": "git",
-				"reference": "master"
-			}
-		}
 	}],
 	"require": {
 		"php": ">=5.2.1",
 		"fabpot/yaml": "1.*",
-		"leafo/lessphp": "0.3.*",
+		"leafo/lessphp": "dev-master",
 		"webvariants/babelcache": "1.2.*"
 	},
 	"suggest": {
@@ -47,5 +35,10 @@
 	},
 	"config": {
 		"vendor-dir": "sally/vendor"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-default" : "0.7-dev"
+		}
 	}
 }
