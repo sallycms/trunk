@@ -1,5 +1,5 @@
 {
-    "hash": "b3b4fbb89278517c1f922f006d013e00",
+    "hash": "1965ac9048bf83cf390758a40eb6c4cf",
     "packages": [
         {
             "package": "fabpot/yaml",
@@ -9,6 +9,10 @@
             "package": "leafo/lessphp",
             "version": "dev-master",
             "source-reference": "e0b199efdda5f0a09c979e91f95c622ae48e173a"
+        },
+        {
+            "package": "sallycms/less-mixins",
+            "version": "v2.2.0"
         },
         {
             "package": "webvariants/babelcache",
