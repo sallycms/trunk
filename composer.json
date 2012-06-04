@@ -21,6 +21,12 @@
 				"reference": "master"
 			}
 		}
+	}, {
+		"type": "pear",
+		"url": "http://pear.phpunit.de/"
+	}, {
+		"type": "pear",
+		"url": "http://pear.symfony-project.com/"
 	}],
 	"require": {
 		"php": ">=5.2.1",
@@ -28,6 +34,9 @@
 		"leafo/lessphp": "dev-master",
 		"webvariants/babelcache": "1.2.*",
 		"sallycms/less-mixins": ">=2.2.0,<3.0.0"
+	},
+	"require-dev": {
+		"pear-phpunit/DbUnit": ">=1.1"
 	},
 	"suggest": {
 		"sallycms/be-search": "Provides more fine grained navigation option for the backend.",
