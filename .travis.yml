@@ -7,8 +7,9 @@ php:
 
 install:
    - wget http://getcomposer.org/composer.phar
-   - php composer.phar install
+   - php composer.phar install --dev
    - mysql -e "CREATE DATABASE sally_test"
+   - mysql --database=sally_test -uroot < sally/core/install/mysql.sql
 
 script:
    - phpunit --strict --bootstrap sally/tests/bootstrap.php sally/tests/tests
