@@ -21,9 +21,21 @@ function hg($cmd) {
 // Configuration
 
 $variants = array(
-	'starterkit' => array('tests' => true, 'addons' => array('image_resize', 'import_export', 'be_search', 'metainfo', 'developer_utils', 'global_settings', 'deployer', 'realurl2', 'wymeditor', 'rbac')),
-	'lite'       => array('tests' => true, 'addons' => array()),
-	'minimal'    => array('tests' => false, 'addons' => array())
+	'starterkit' => array('tests' => true, 'addons' => array(
+		'sallycms/be-search',
+		'sallycms/image-resize',
+		'sallycms/import-export',
+		'webvariants/deployer',
+		'webvariants/developer-utils',
+		'webvariants/global-settings',
+		'webvariants/metainfo',
+		'webvariants/realurl2',
+		'webvariants/wymeditor',
+		'webvariants/rbac'
+	)),
+
+	'lite'    => array('tests' => true, 'addons' => array()),
+	'minimal' => array('tests' => false, 'addons' => array())
 );
 
 $addonDir = 'Q:\\AddOns\\';
@@ -70,6 +82,7 @@ foreach ($variants as $name => $settings) {
 		'-X .hg_archival.txt',
 		'-X .hgignore',
 		'-X .hgtags',
+		'-X .travis.yml',
 		'-X contrib',
 		'-X sally/docs'
 	);
@@ -100,9 +113,9 @@ foreach ($variants as $name => $settings) {
 		print " -> addons...\n";
 
 		foreach ($settings['addons'] as $addon) {
-			print '    -> '.str_pad($addon.'...', 20, ' ');
+			print '    -> '.str_pad($addon.'...', 30, ' ');
 
-			$dir = $addonDir.$addon;
+			$dir = $addonDir.basename($addon);
 			chdir($dir);
 
 			// update the repo
@@ -125,6 +138,7 @@ foreach ($variants as $name => $settings) {
 				'-X .hg_archival.txt',
 				'-X .hgignore',
 				'-X .hgtags',
+				'-X .travis.yml',
 				'-X docs',
 				'-X make.bat',
 				'-r '.$toArchive,
@@ -145,6 +159,7 @@ foreach ($variants as $name => $settings) {
 			'-X .hg_archival.txt',
 			'-X .hgignore',
 			'-X .hgtags',
+			'-X .travis.yml',
 			'-X make.bat',
 			'-r tip',
 			'"'.$target.'"'
