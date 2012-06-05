@@ -6,7 +6,7 @@ php:
    - 5.4
 
 install:
-   - 'wget http://getcomposer.org/composer.phar'
+   - 'wget -q http://getcomposer.org/composer.phar'
    - 'php composer.phar install --dev'
    - 'mysql -e "CREATE DATABASE sally_test"'
    - 'mysql --database=sally_test < sally/core/install/mysql.sql'
