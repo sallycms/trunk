@@ -1,7 +1,7 @@
 language: php
 
 php:
-   - 5.2
+#   - 5.2  # disabled until we can install our dependencies without Composer
    - 5.3
    - 5.4
 
