@@ -20,4 +20,4 @@ then
   phpenv global 5.2
 fi
 
-print $TRAVIS_PHP_VERSION
+php --version
