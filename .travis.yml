@@ -5,6 +5,8 @@ php:
    - 5.3
    - 5.4
 
-install: ./contrib/setup-travis.sh
+install:
+   - chmod +x contrib/setup-travis.sh
+   - ./contrib/setup-travis.sh
 script:
    - phpunit --configuration sally/tests/full.xml
