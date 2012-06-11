@@ -8,5 +8,11 @@ php:
 install:
    - chmod +x contrib/setup-travis.sh
    - ./contrib/setup-travis.sh
+
 script:
    - phpunit --configuration sally/tests/full.xml
+
+notifications:
+   email:
+      recipients:
+         - travis-ci-monitor@sallycms.de
