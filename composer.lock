@@ -8,7 +8,7 @@
         {
             "package": "leafo/lessphp",
             "version": "dev-master",
-            "source-reference": "e0b199efdda5f0a09c979e91f95c622ae48e173a"
+            "source-reference": "v0.3.5"
         },
         {
             "package": "sallycms/less-mixins",
