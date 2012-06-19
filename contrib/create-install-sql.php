@@ -148,7 +148,7 @@ revisionCol($table);
 $table->setPrimaryKey(array('id'));
 
 ////////////////////////////////////////////////////////////////////////////////
-// sly_clang
+// sly_file
 
 $table = createTable($schema, 'sly_file');
 
@@ -193,7 +193,7 @@ serialCol($table, 'id');
 customCol($table, 'name', 'VARCHAR(255) NULL');
 customCol($table, 'description', 'VARCHAR(255) NULL');
 stringCol($table, 'login', 50);
-charCol($table,   'psw', 40);
+charCol($table,   'password', 40);
 boolCol($table,   'status');
 textCol($table,   'rights');
 intCol($table,    'lasttrydate', true, 11, 0);
