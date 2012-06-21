@@ -15,10 +15,20 @@
 			"name": "fabpot/yaml",
 			"version": "1.0.6",
 			"autoload": {"psr-0":{"sfYaml": ""}},
-			"source": {
-				"url": "https://github.com/fabpot/yaml",
-				"type": "git",
-				"reference": "master"
+			"dist": {
+				"type": "zip",
+				"url": "https://github.com/fabpot/yaml/zipball/master"
+			}
+		}
+	}, {
+		"type": "package",
+		"package": {
+			"name": "leafo/lessphp",
+			"version": "0.3.5",
+			"autoload": ["lessc.inc.php"],
+			"dist": {
+				"type": "zip",
+				"url": "https://github.com/leafo/lessphp/zipball/v0.3.5"
 			}
 		}
 	}, {
@@ -30,13 +40,13 @@
 	}],
 	"require": {
 		"php": ">=5.2.1",
-		"fabpot/yaml": "1.*",
-		"leafo/lessphp": "dev-master",
+		"fabpot/yaml": "1.0.6",
+		"leafo/lessphp": "0.3.5",
 		"webvariants/babelcache": "1.2.*",
 		"sallycms/less-mixins": ">=2.2.0,<3.0.0"
 	},
 	"require-dev": {
-		"pear-phpunit/DbUnit": ">=1.1"
+		"pear-phpunit/DbUnit": ">=1.1,<1.2"
 	},
 	"suggest": {
 		"sallycms/be-search": "Provides more fine grained navigation option for the backend.",
