@@ -1,5 +1,5 @@
 {
-    "hash": "d73a2f5ad5c81601489aa821ffdb2e3c",
+    "hash": "27c64d7487d0b328a53d49c24f535b77",
     "packages": [
         {
             "package": "fabpot/yaml",
@@ -7,7 +7,7 @@
         },
         {
             "package": "leafo/lessphp",
-            "version": "0.3.5"
+            "version": "v0.3.5"
         },
         {
             "package": "sallycms/less-mixins",
@@ -23,7 +23,7 @@
 
     ],
     "minimum-stability": "dev",
-    "stability-flags": [
-
-    ]
+    "stability-flags": {
+        "leafo/lessphp": 0
+    }
 }

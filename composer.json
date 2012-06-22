@@ -21,17 +21,6 @@
 			}
 		}
 	}, {
-		"type": "package",
-		"package": {
-			"name": "leafo/lessphp",
-			"version": "0.3.5",
-			"autoload": ["lessc.inc.php"],
-			"dist": {
-				"type": "zip",
-				"url": "https://github.com/leafo/lessphp/zipball/v0.3.5"
-			}
-		}
-	}, {
 		"type": "pear",
 		"url": "http://pear.phpunit.de/"
 	}, {
@@ -41,7 +30,7 @@
 	"require": {
 		"php": ">=5.2.1",
 		"fabpot/yaml": "1.0.6",
-		"leafo/lessphp": "0.3.5",
+		"leafo/lessphp": "0.3.*@stable",
 		"webvariants/babelcache": "1.2.*",
 		"sallycms/less-mixins": ">=2.2.0,<3.0.0"
 	},
