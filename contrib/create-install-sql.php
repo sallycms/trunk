@@ -33,8 +33,8 @@ function revisionCol(Table $table) {
 }
 
 function userCols(Table $table) {
-	intCol($table,    'createdate');
-	intCol($table,    'updatedate');
+	datetimeCol($table, 'createdate');
+	datetimeCol($table, 'updatedate');
 	stringCol($table, 'createuser');
 	stringCol($table, 'updateuser');
 }
@@ -53,6 +53,10 @@ function charCol(Table $table, $name, $length) {
 
 function boolCol(Table $table, $name) {
 	$table->addColumn($name, 'boolean');
+}
+
+function datetimeCol(Table $table, $name) {
+	$table->addColumn($name, 'datetime');
 }
 
 function blobCol(Table $table, $name) {
@@ -189,15 +193,15 @@ $table->setPrimaryKey(array('id'));
 
 $table = createTable($schema, 'sly_user');
 
-serialCol($table, 'id');
-customCol($table, 'name', 'VARCHAR(255) NULL');
-customCol($table, 'description', 'VARCHAR(255) NULL');
-stringCol($table, 'login', 50);
-charCol($table,   'password', 40);
-boolCol($table,   'status');
-textCol($table,   'rights');
-intCol($table,    'lasttrydate', true, 11, 0);
-customCol($table, 'timezone', 'VARCHAR(64) NULL');
+serialCol($table,   'id');
+customCol($table,   'name', 'VARCHAR(255) NULL');
+customCol($table,   'description', 'VARCHAR(255) NULL');
+stringCol($table,   'login', 50);
+charCol($table,     'password', 128);
+boolCol($table,     'status');
+textCol($table,     'rights');
+customCol($table,   'lasttrydate', 'DATETIME NULL');
+customCol($table,   'timezone', 'VARCHAR(64) NULL');
 userCols($table);
 revisionCol($table);
 
