@@ -8,8 +8,7 @@ then
   resetVersion=1
 fi
 
-curl -s http://getcomposer.org/installer | php
-php composer.phar install --dev
+composer install --dev
 
 mysql -e "CREATE DATABASE sally_test"
 mysql --database=sally_test < sally/core/install/mysql.sql
