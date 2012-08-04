@@ -12,187 +12,330 @@ if (PHP_SAPI !== 'cli') {
 	die('This script has to be run from command line.');
 }
 
-function hg($cmd) {
-	$output = array();
-	exec('hg --config progress.disable=True '.$cmd.' 2>&1', $output);
-	return implode("\n", $output);
-}
+define('JSON_UNESCAPED_SLASHES', 64);
+define('JSON_PRETTY_PRINT',      128);
+define('JSON_UNESCAPED_UNICODE', 256);
 
+////////////////////////////////////////////////////////////////////////////////
 // Configuration
 
-$variants = array(
-	'starterkit' => array('tests' => true, 'addons' => array(
-		'sallycms/be-search',
-		'sallycms/image-resize',
-		'sallycms/import-export',
-		'webvariants/deployer',
-		'webvariants/developer-utils',
-		'webvariants/global-settings',
-		'webvariants/metainfo',
-		'webvariants/realurl2',
-		'webvariants/wymeditor',
-		'webvariants/rbac'
-	)),
-
-	'lite'    => array('tests' => true, 'addons' => array()),
-	'minimal' => array('tests' => false, 'addons' => array())
+$demoRepo = 'Q:\sally\demo';
+$buildDir = 'Q:\sally\releases';
+$addons   = array(
+	'sallycms/be-search',
+	'sallycms/image-resize',
+	'sallycms/import-export',
+	'webvariants/deployer',
+	'webvariants/developer-utils',
+	'webvariants/global-settings',
+	'webvariants/metainfo',
+	'webvariants/realurl2',
+	'webvariants/wymeditor',
+	'webvariants/rbac'
 );
 
-$addonDir = 'Q:\\AddOns\\';
+$variants = array(
+	'starterkit'            => array('tests' => true, 'addons' => $addons, 'demo' => true, 'install' => false),
+	'starterkit-standalone' => array('tests' => true, 'addons' => $addons, 'demo' => true, 'install' => true),
 
+	'lite'    => array('tests' => true,  'demo' => false, 'addons' => array()),
+	'minimal' => array('tests' => false, 'demo' => false, 'addons' => array())
+);
+
+////////////////////////////////////////////////////////////////////////////////
 // Check arguments
 
 $args = $_SERVER['argv'];
 
 if (count($args) < 2) {
-	die('Usage: php '.$args[0].' tagname [nofetch]');
+	print 'Usage: php '.$args[0].' tagname'.PHP_EOL;
+	exit(1);
 }
 
-$repo    = realpath(dirname(__FILE__).'/../');
-$tag     = $args[1];
-$nofetch = isset($args[2]) && $args[2] === 'nofetch';
+$repo = realpath(__DIR__.'/../');
+$tag  = $args[1];
 
+////////////////////////////////////////////////////////////////////////////////
 // Check tag
 
 chdir($repo);
 $output = hg('identify -r "'.$tag.'"');
 
 if (substr($output, 0, 6) == 'abort:') {
-	die('Tag "'.$tag.'" was not found.');
+	print 'Tag "'.$tag.'" was not found.'.PHP_EOL;
+	exit(1);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 // Create releases directory
 
-if (!is_dir('../releases')) mkdir('../releases');
-$releases = realpath('../releases');
+if (!is_dir($buildDir)) mkdir($buildDir);
+$buildDir = realpath($buildDir);
 
+////////////////////////////////////////////////////////////////////////////////
 // Create variants
 
 foreach ($variants as $name => $settings) {
-	print strtoupper($name)."\n";
+	llog(strtoupper($name));
 
-	$target = sprintf('%s/sally-%s%s/sally', $releases, $tag, '-'.$name);
-
-	// Create repository archive
-
-	$output = array();
-	$params = array(
-		'-r "'.$tag.'"',
-		'-X assets',
-		'-X .hg_archival.txt',
-		'-X .hgignore',
-		'-X .hgtags',
-		'-X .travis.yml',
-		'-X contrib',
-		'-X sally/docs'
-	);
+	$target  = sprintf('%s/sally-%s-%s/sally', $buildDir, $tag, $name);
+	$exclude = 'assets;.hg_archival.txt;.hgignore;.hgtags;.travis.yml;contrib;sally/docs';
 
 	if (!$settings['tests']) {
-		$params[] = '-X sally/tests';
+		$exclude .= ';sally/tests';
 	}
 
-	$params[] = '"'.$target.'"';
-	print ' -> archiving...';
-	chdir($repo);
-	hg('archive '.implode(' ', $params));
-	print "\n";
+	// Create repository archive
+	archive($repo, $target, $tag, $exclude, 1);
 
 	// Create empty data dir
-
-	chdir($target);
+	pushd($target);
 	@mkdir('data');
 	@mkdir('sally/addons');
-	file_put_contents('data/empty', 'This directory is intentionally left blank. Please make sure it\'s chmod to 0777.');
 
-	// Put addOns in the archive
+	if (!$settings['demo']) {
+		file_put_contents('data/empty', 'This directory is intentionally left blank. Please make sure it\'s chmod to 0777.');
+	}
 
+	// bare archive get an empty file
 	if (empty($settings['addons'])) {
 		file_put_contents('sally/addons/empty', 'Put all your addOns in this directory. PHP does not need writing permissions in here.');
 	}
-	else {
-		print " -> addons...\n";
+
+	// run Composer to install all dependencies and addOns
+	elseif ($settings['install']) {
+		llog('requiring addons', 1);
 
 		foreach ($settings['addons'] as $addon) {
-			print '    -> '.str_pad($addon.'...', 30, ' ');
-
-			$dir = $addonDir.basename($addon);
-			chdir($dir);
-
-			// update the repo
-			if (!$nofetch) {
-				print ' fetching...';
-				hg('fetch');
-				print ' archiving...';
-			}
-
-			// find latest_sly06 tag
-			$output = array();
-			exec('hg identify -r latest_sly06 2>&1', $output);
-
-			$output    = implode("\n", $output);
-			$toArchive = substr($output, 0, 6) == 'abort:' ? 'tip' : 'latest_sly06';
-
-			// archive the repo into our sally archive
-
-			$params = array(
-				'-X .hg_archival.txt',
-				'-X .hgignore',
-				'-X .hgtags',
-				'-X .travis.yml',
-				'-X docs',
-				'-X make.bat',
-				'-r '.$toArchive,
-				'"'.$target.'/sally/addons/'.$addon.'"'
-			);
-
-			hg('archive '.implode(' ', $params));
-			print "\n";
+			llog($addon.'...', 2, false);
+			exec('composer.phar require "'.$addon.'=*"');
+			finish();
 		}
+
+		llog('installing...', 1, false);
+		exec('composer.phar update');
+		finish();
 	}
 
-	// Add starterkit contents (templates, modules, assets, ...)
+	// update composer.json
+	else {
+		llog('adding addon requirements...', 1, false);
 
-	if ($name === 'starterkit') {
-		print ' -> demo project...';
+		$json     = file_get_contents('composer.json');
+		$composer = json_decode($json, true);
 
-		$params = array(
-			'-X .hg_archival.txt',
-			'-X .hgignore',
-			'-X .hgtags',
-			'-X .travis.yml',
-			'-X make.bat',
-			'-r tip',
-			'"'.$target.'"'
-		);
-
-		chdir($releases);
-		chdir('../demo');
-
-		if (!$nofetch) {
-			print ' fetching...';
-			hg('fetch');
-			print ' archiving...';
+		foreach ($settings['addons'] as $addon) {
+			$composer['require'][$addon] = '*';
 		}
 
-		hg('archive '.implode(' ', $params));
-		print "\n";
+		$helper = new JSON_Beautifier();
+		$pretty = $helper->prettyprint($composer);
+
+		file_put_contents('composer.json', $pretty);
+		finish();
+	}
+
+	// add starterkit contents (templates, modules, assets, ...)
+	if ($settings['demo']) {
+		llog('adding demo project', 1);
+		llog('updating...', 2, false);
+
+		pushd($demoRepo);
+		hg('fetch');
+		popd();
+
+		finish();
+
+		$exclude = '.hg_archival.txt;.hgignore;.hgtags;.travis.yml;make.bat';
+		archive($demoRepo, $target, 'tip', $exclude, 2);
 	}
 
 	// Create archives
+	llog('creating download archives', 1);
 
-	chdir($target);
-	print " -> compressing...\n";
-
-	chdir('..');
+	pushd('..');
 	$suffix = '-'.$name;
 
-	print '    -> zip...';
+	llog('zip...', 2, false);
 	exec('7z a -mx9 "../sally-'.$tag.$suffix.'.zip" "'.$target.'"');
-	print "\n";
+	finish();
 
-	print '    -> 7z...';
+	llog('7z...', 2, false);
 	exec('7z a -mx9 "../sally-'.$tag.$suffix.'.7z" "'.$target.'"');
-	print "\n";
+	finish();
+
+	popd(); // into archive dir
+	popd(); // into repository
+
+	print PHP_EOL;
 }
 
-print 'done.'."\n";
+llog('done.');
+
+function hg($cmd) {
+	$output = array();
+	exec('hg --config progress.disable=True '.$cmd.' 2>&1', $output);
+	return implode("\n", $output);
+}
+
+function llog($msg, $depth = 0, $eol = true) {
+	printf('%'.($depth*2).'s* %s', '', $msg);
+	if ($eol) print PHP_EOL;
+}
+
+function finish() {
+	print PHP_EOL;
+}
+
+function pushd($dir) {
+	$GLOBALS['dirhist'][] = getcwd();
+	chdir($dir);
+}
+
+function popd() {
+	chdir(array_pop($GLOBALS['dirhist']));
+}
+
+function archive($source, $target, $rev, $exclude, $depth) {
+	$exclude = explode(';', $exclude);
+	$params  = array('-r "'.$rev.'"');
+
+	foreach ($exclude as $excl) {
+		$params[] = '-X '.$excl;
+	}
+
+	$params[] = '"'.$target.'"';
+
+	llog('archiving...', $depth, false);
+
+	pushd($source);
+	hg('archive '.implode(' ', $params));
+	popd();
+
+	finish();
+}
+
+class JSON_Beautifier {
+	public function prettyprint($data, $options = 448, $optimize = true) {
+		$indented = $this->indent($data, $options);
+		return $optimize? $this->optimize($indented) : $indented;
+	}
+
+	public function optimize($json) {
+		preg_match_all('#^(\s*)"(.+?)": \[([^{}[]+?)^\1\]#m', $json, $matches, PREG_SET_ORDER);
+		foreach ($matches as $match) {
+			$json = str_replace($match[0], $match[1].'"'.$match[2].'": ['.trim(preg_replace('#,\n\s+"#m', ', "', $match[3])).']', $json);
+		}
+
+		preg_match_all('#^(\s*)\[([^{}[]+?)^\1\]#m', $json, $matches, PREG_SET_ORDER);
+		foreach ($matches as $match) {
+			$json = str_replace($match[0], $match[1].'['.trim(preg_replace('#,\n\s+"#m', ', "', $match[2])).']', $json);
+		}
+
+		preg_match_all('#^(\s*)"(.+?)": \{\n([^\n]+?)\n^\1\}#m', $json, $matches, PREG_SET_ORDER);
+		foreach ($matches as $match) {
+			$json = str_replace($match[0], $match[1].'"'.$match[2].'": { '.trim($match[3]).' }', $json);
+		}
+
+		preg_match_all('#^(\s*)\{\n([^\n]+?)\n^\1\}#m', $json, $matches, PREG_SET_ORDER);
+		foreach ($matches as $match) {
+			$json = str_replace($match[0], $match[1].'{ '.trim($match[2]).' }', $json);
+		}
+
+		return rtrim($json)."\n";
+	}
+
+	public function indent($data, $options = 448) {
+		if (version_compare(PHP_VERSION, '5.4', '>=')) {
+			return json_encode($data, $options);
+		}
+
+		$json = json_encode($data);
+
+		$prettyPrint = (Boolean) ($options & JSON_PRETTY_PRINT);
+		$unescapeUnicode = (Boolean) ($options & JSON_UNESCAPED_UNICODE);
+		$unescapeSlashes = (Boolean) ($options & JSON_UNESCAPED_SLASHES);
+
+		if (!$prettyPrint && !$unescapeUnicode && !$unescapeSlashes) {
+			return $json;
+		}
+
+		$result = '';
+		$pos = 0;
+		$strLen = strlen($json);
+		$indentStr = "\t";
+		$newLine = "\n";
+		$outOfQuotes = true;
+		$buffer = '';
+		$noescape = true;
+
+		for ($i = 0; $i <= $strLen; $i++) {
+			// Grab the next character in the string
+			$char = substr($json, $i, 1);
+
+			// Are we inside a quoted string?
+			if ('"' === $char && $noescape) {
+				$outOfQuotes = !$outOfQuotes;
+			}
+
+			if (!$outOfQuotes) {
+				$buffer .= $char;
+				$noescape = '\\' === $char ? !$noescape : true;
+				continue;
+			} elseif ('' !== $buffer) {
+				if ($unescapeSlashes) {
+					$buffer = str_replace('\\/', '/', $buffer);
+				}
+
+				if ($unescapeUnicode && function_exists('mb_convert_encoding')) {
+					// http://stackoverflow.com/questions/2934563/how-to-decode-unicode-escape-sequences-like-u00ed-to-proper-utf-8-encoded-cha
+					$buffer = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', function($match) {
+						return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+					}, $buffer);
+				}
+
+				$result .= $buffer.$char;
+				$buffer = '';
+				continue;
+			}
+
+			if (':' === $char) {
+				// Add a space after the : character
+				$char .= ' ';
+			} elseif (('}' === $char || ']' === $char)) {
+				$pos--;
+				$prevChar = substr($json, $i - 1, 1);
+
+				if ('{' !== $prevChar && '[' !== $prevChar) {
+					// If this character is the end of an element,
+					// output a new line and indent the next line
+					$result .= $newLine;
+					for ($j = 0; $j < $pos; $j++) {
+						$result .= $indentStr;
+					}
+				} else {
+					// Collapse empty {} and []
+					$result = rtrim($result);
+				}
+			}
+
+			$result .= $char;
+
+			// If the last character was the beginning of an element,
+			// output a new line and indent the next line
+			if (',' === $char || '{' === $char || '[' === $char) {
+				$result .= $newLine;
+
+				if ('{' === $char || '[' === $char) {
+					$pos++;
+				}
+
+				for ($j = 0; $j < $pos; $j++) {
+					$result .= $indentStr;
+				}
+			}
+		}
+
+		return $result;
+	}
+}
