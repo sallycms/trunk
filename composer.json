@@ -49,6 +49,7 @@
         "sallycms/less-mixins": ">=2.2.0,<3.0.0"
     },
     "require-dev": {
+        "pear-phpunit/phpunit": "3.6.*",
         "pear-phpunit/DbUnit": ">=1.1,<1.2"
     },
     "suggest": {
