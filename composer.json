@@ -13,7 +13,7 @@
         }
     ],
     "homepage": "http://www.sallycms.de/",
-    "version": "0.7.0-RC1",
+    "version": "0.7.x-dev",
     "license": "MIT",
     "repositories": [
         {
