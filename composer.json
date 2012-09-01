@@ -62,7 +62,7 @@
     },
     "extra": {
         "branch-alias": {
-            "default": "0.7.x-dev"
+            "dev-default": "0.7.x-dev"
         }
     }
 }
