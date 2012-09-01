@@ -129,7 +129,7 @@ foreach ($variants as $name => $settings) {
 		}
 
 		$helper = new JSON_Beautifier();
-		$pretty = $helper->prettyprint($composer);
+		$pretty = $helper->indent($composer);
 
 		file_put_contents('composer.json', $pretty);
 		finish();
@@ -216,35 +216,6 @@ function archive($source, $target, $rev, $exclude, $depth) {
 }
 
 class JSON_Beautifier {
-	public function prettyprint($data, $options = 448, $optimize = true) {
-		$indented = $this->indent($data, $options);
-		return $optimize? $this->optimize($indented) : $indented;
-	}
-
-	public function optimize($json) {
-		preg_match_all('#^(\s*)"(.+?)": \[([^{}[]+?)^\1\]#m', $json, $matches, PREG_SET_ORDER);
-		foreach ($matches as $match) {
-			$json = str_replace($match[0], $match[1].'"'.$match[2].'": ['.trim(preg_replace('#,\n\s+"#m', ', "', $match[3])).']', $json);
-		}
-
-		preg_match_all('#^(\s*)\[([^{}[]+?)^\1\]#m', $json, $matches, PREG_SET_ORDER);
-		foreach ($matches as $match) {
-			$json = str_replace($match[0], $match[1].'['.trim(preg_replace('#,\n\s+"#m', ', "', $match[2])).']', $json);
-		}
-
-		preg_match_all('#^(\s*)"(.+?)": \{\n([^\n]+?)\n^\1\}#m', $json, $matches, PREG_SET_ORDER);
-		foreach ($matches as $match) {
-			$json = str_replace($match[0], $match[1].'"'.$match[2].'": { '.trim($match[3]).' }', $json);
-		}
-
-		preg_match_all('#^(\s*)\{\n([^\n]+?)\n^\1\}#m', $json, $matches, PREG_SET_ORDER);
-		foreach ($matches as $match) {
-			$json = str_replace($match[0], $match[1].'{ '.trim($match[2]).' }', $json);
-		}
-
-		return rtrim($json)."\n";
-	}
-
 	public function indent($data, $options = 448) {
 		if (version_compare(PHP_VERSION, '5.4', '>=')) {
 			return json_encode($data, $options);
@@ -263,7 +234,7 @@ class JSON_Beautifier {
 		$result = '';
 		$pos = 0;
 		$strLen = strlen($json);
-		$indentStr = "\t";
+		$indentStr = "    ";
 		$newLine = "\n";
 		$outOfQuotes = true;
 		$buffer = '';
