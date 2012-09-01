@@ -50,7 +50,7 @@
     },
     "require-dev": {
         "pear-phpunit/phpunit": "3.6.*",
-        "pear-phpunit/DbUnit": ">=1.1,<1.2"
+        "pear-phpunit/dbunit": ">=1.1,<1.2"
     },
     "suggest": {
         "sallycms/be-search": "Provides more fine grained navigation option for the backend.",
