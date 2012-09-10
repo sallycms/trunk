@@ -9,7 +9,6 @@
  */
 
 class sly_Controller_Structure extends sly_Controller_Backend implements sly_Controller_Interface {
-	protected $action;
 	protected $categoryId;
 	protected $clangId;
 	protected $artService;
@@ -18,9 +17,8 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 	protected $renderEditCategory = false;
 	protected $renderAddArticle   = false;
 	protected $renderEditArticle  = false;
-	protected $init = false;
 
-	protected static $viewPath;
+	protected static $viewPath = 'structure/';
 
 	public function __construct($dontRedirect = false) {
 		parent::__construct();
@@ -35,77 +33,20 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 		}
 	}
 
-	protected function init($action = null, $chromeless = false) {
-		if ($this->init) return true;
-		$this->init = true;
-
-		self::$viewPath = 'structure/';
-
-		$this->action     = $action;
+	protected function init() {
 		$this->categoryId = sly_request('category_id', 'int', 0);
 		$this->clangId    = sly_Core::getCurrentClang();
 		$this->artService = sly_Service_Factory::getArticleService();
 		$this->catService = sly_Service_Factory::getCategoryService();
-
-		if ($chromeless) return true;
-
-		if (count(sly_Util_Language::findAll()) === 0) {
-			sly_Core::getLayout()->pageHeader(t('structure'));
-			print sly_Helper_Message::info(t('no_languages_yet'));
-			return false;
-		}
-
-		sly_Core::getLayout()->pageHeader(t('structure'), $this->getBreadcrumb());
-
-		$this->render('toolbars/languages.phtml', array(
-			'curClang' => $this->clangId,
-			'params'   => array('page' => 'structure', 'category_id' => $this->categoryId)
-		), false);
-
-		print sly_Core::dispatcher()->filter('PAGE_STRUCTURE_HEADER', '', array(
-			'category_id' => $this->categoryId,
-			'clang'       => $this->clangId
-		));
-
-		return true;
 	}
 
 	public function indexAction() {
-		$this->viewAction();
-	}
-
-	public function viewAction() {
-		if (!$this->init('view')) return;
-
-		// render flash message
-		print sly_Helper_Message::renderFlashMessage();
-
-		$currentCategory = $this->catService->findById($this->categoryId);
-		$categories      = $this->catService->findByParentId($this->categoryId, false);
-		$articles        = $this->artService->findArticlesByCategory($this->categoryId, false);
-		$maxPosition     = $this->artService->getMaxPosition($this->categoryId);
-		$maxCatPosition  = $this->catService->getMaxPosition($this->categoryId);
-
-		$this->render(self::$viewPath.'category_table.phtml', array(
-			'categories'      => $categories,
-			'currentCategory' => $currentCategory,
-			'statusTypes'     => $this->catService->getStates(),
-			'maxPosition'     => $maxPosition,
-			'maxCatPosition'  => $maxCatPosition
-		), false);
-
-		$this->render(self::$viewPath.'article_table.phtml', array(
-			'articles'       => $articles,
-			'statusTypes'    => $this->artService->getStates(),
-			'canAdd'         => $this->canEditCategory($this->categoryId),
-			'canEdit'        => $this->canEditCategory($this->categoryId),
-			'maxPosition'    => $maxPosition,
-			'maxCatPosition' => $maxCatPosition
-		), false);
+		$this->init();
+		$this->view('index');
 	}
 
 	public function editstatuscategoryAction() {
-		if (!$this->init('editstatuscategory', true)) return;
+		$this->init();
 
 		$editId = sly_get('edit_id', 'int', 0);
 		$flash  = sly_Core::getFlashMessage();
@@ -122,7 +63,7 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 	}
 
 	public function editstatusarticleAction() {
-		if (!$this->init('editstatusarticle', true)) return;
+		$this->init();
 
 		$editId = sly_get('edit_id', 'int', 0);
 		$flash  = sly_Core::getFlashMessage();
@@ -139,7 +80,7 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 	}
 
 	public function deletecategoryAction() {
-		if (!$this->init('deletecategory', true)) return;
+		$this->init();
 
 		$editId = sly_get('edit_id', 'int', 0);
 		$flash  = sly_Core::getFlashMessage();
@@ -156,7 +97,7 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 	}
 
 	public function deletearticleAction() {
-		if (!$this->init('deletearticle', true)) return;
+		$this->init();
 
 		$editId = sly_get('edit_id', 'int', 0);
 		$flash  = sly_Core::getFlashMessage();
@@ -173,7 +114,7 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 	}
 
 	public function addcategoryAction() {
-		if (!$this->init('addcategory')) return;
+		$this->init();
 
 		if (sly_post('do_add_category', 'boolean')) {
 			$name     = sly_post('category_name',     'string', '');
@@ -192,11 +133,11 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 		}
 
 		$this->renderAddCategory = true;
-		$this->viewAction();
+		$this->view('addcategory');
 	}
 
 	public function addarticleAction() {
-		if (!$this->init('addarticle')) return;
+		$this->init();
 
 		if (sly_post('do_add_article', 'boolean')) {
 			$name     = sly_post('article_name',     'string', '');
@@ -215,11 +156,11 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 		}
 
 		$this->renderAddArticle = true;
-		$this->viewAction();
+		$this->view('addarticle');
 	}
 
 	public function editcategoryAction() {
-		if (!$this->init('editcategory')) return;
+		$this->init();
 
 		$editId = sly_request('edit_id', 'int', 0);
 
@@ -240,11 +181,11 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 		}
 
 		$this->renderEditCategory = $editId;
-		$this->viewAction();
+		$this->view('editcategory');
 	}
 
 	public function editarticleAction() {
-		if (!$this->init('editarticle')) return;
+		$this->init();
 
 		$editId = sly_request('edit_id', 'int', 0);
 
@@ -265,7 +206,7 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 		}
 
 		$this->renderEditArticle = $editId;
-		$this->viewAction();
+		$this->view('editarticle');
 	}
 
 	/**
@@ -376,6 +317,62 @@ class sly_Controller_Structure extends sly_Controller_Backend implements sly_Con
 		}
 
 		return true;
+	}
+
+	/**
+	 *
+	 * @param string $action the current action
+	 */
+	protected function view($action) {
+		/* stop the view if no languages are available
+		 * but present a nice message
+		 */
+		if (count(sly_Util_Language::findAll()) === 0) {
+			sly_Core::getLayout()->pageHeader(t('structure'));
+			print sly_Helper_Message::info(t('no_languages_yet'));
+			return;
+		}
+
+		sly_Core::getLayout()->pageHeader(t('structure'), $this->getBreadcrumb());
+
+		$this->render('toolbars/languages.phtml', array(
+			'curClang' => $this->clangId,
+			'params'   => array('page' => 'structure', 'category_id' => $this->categoryId)
+		), false);
+
+		print sly_Core::dispatcher()->filter('PAGE_STRUCTURE_HEADER', '', array(
+			'category_id' => $this->categoryId,
+			'clang'       => $this->clangId
+		));
+
+
+		// render flash message
+		print sly_Helper_Message::renderFlashMessage();
+
+		$currentCategory = $this->catService->findById($this->categoryId);
+		$categories      = $this->catService->findByParentId($this->categoryId, false);
+		$articles        = $this->artService->findArticlesByCategory($this->categoryId, false);
+		$maxPosition     = $this->artService->getMaxPosition($this->categoryId);
+		$maxCatPosition  = $this->catService->getMaxPosition($this->categoryId);
+
+		$this->render(self::$viewPath.'category_table.phtml', array(
+			'action'          => $action,
+			'categories'      => $categories,
+			'currentCategory' => $currentCategory,
+			'statusTypes'     => $this->catService->getStates(),
+			'maxPosition'     => $maxPosition,
+			'maxCatPosition'  => $maxCatPosition
+		), false);
+
+		$this->render(self::$viewPath.'article_table.phtml', array(
+			'action'         => $action,
+			'articles'       => $articles,
+			'statusTypes'    => $this->artService->getStates(),
+			'canAdd'         => $this->canEditCategory($this->categoryId),
+			'canEdit'        => $this->canEditCategory($this->categoryId),
+			'maxPosition'    => $maxPosition,
+			'maxCatPosition' => $maxCatPosition
+		), false);
 	}
 
 	protected function redirectToCat($catID = null, $clang = null) {
