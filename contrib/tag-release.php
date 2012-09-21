@@ -8,6 +8,10 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+if (PHP_SAPI !== 'cli') {
+	die('This script has to be run from command line.');
+}
+
 if (!defined('JSON_UNESCAPED_SLASHES')) {
 	die('This script requires PHP 5.4+.');
 }
