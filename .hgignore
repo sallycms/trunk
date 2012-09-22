@@ -8,5 +8,6 @@ syntax:regexp
 ^sally/docs/.*
 ^sally/vendor/.*
 ^sally/addons/.*
+^test-coverage/.*
 /\.git/
 \.hg_archival.txt
