@@ -1,5 +1,5 @@
 {
-    "hash": "f3b672f3f9c4347eefb63dbbc1166fc7",
+    "hash": "1ae9112d9dd391c5f4cc37bd820b5fcd",
     "packages": [
         {
             "package": "fabpot/yaml",
@@ -21,7 +21,7 @@
     "packages-dev": [
         {
             "package": "pear-pear.phpunit.de/DbUnit",
-            "version": "1.1.2"
+            "version": "1.2.0"
         },
         {
             "package": "pear-pear.phpunit.de/File_Iterator",
@@ -29,7 +29,7 @@
         },
         {
             "package": "pear-pear.phpunit.de/PHPUnit",
-            "version": "3.6.12"
+            "version": "3.7.1"
         },
         {
             "package": "pear-pear.phpunit.de/PHPUnit_MockObject",
@@ -52,8 +52,8 @@
             "version": "1.1.1"
         },
         {
-            "package": "pear-pear.symfony-project.com/YAML",
-            "version": "1.0.6"
+            "package": "pear-pear.symfony.com/Yaml",
+            "version": "2.1.2"
         }
     ],
     "aliases": [

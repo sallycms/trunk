@@ -38,7 +38,7 @@
         },
         {
             "type": "pear",
-            "url": "http://pear.symfony-project.com/"
+            "url": "http://pear.symfony.com/"
         }
     ],
     "require": {
@@ -49,8 +49,8 @@
         "sallycms/less-mixins": ">=2.2.0,<3.0.0"
     },
     "require-dev": {
-        "pear-phpunit/phpunit": ">=3.6.10,<3.8",
-        "pear-phpunit/dbunit": ">=1.1,<1.2"
+        "pear-phpunit/phpunit": ">=3.7,<3.8",
+        "pear-phpunit/dbunit": ">=1.2,<1.3"
     },
     "suggest": {
         "sallycms/be-search": "Provides more fine grained navigation option for the backend.",
