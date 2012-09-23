@@ -10,7 +10,7 @@ install:
    - ./contrib/setup-travis.sh
 
 script:
-   - php sally/tests/run.php -c sally/tests/full.xml
+   - phpunit -c sally/tests/full.xml
 
 notifications:
    email:
