@@ -13,7 +13,7 @@
         }
     ],
     "homepage": "http://www.sallycms.de/",
-    "version": "0.7.x-dev",
+    "version": "0.8.x-dev",
     "license": "MIT",
     "repositories": [
         {
@@ -62,7 +62,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-default": "0.7.x-dev"
+            "dev-default": "0.8.x-dev"
         }
     }
 }
