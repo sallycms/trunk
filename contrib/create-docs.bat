@@ -1,1 +1,0 @@
-php Q:\docroot\coco\bin\coco.php ../sally/docs doconly
