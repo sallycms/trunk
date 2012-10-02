@@ -48,8 +48,8 @@ else {
 chdir('..');
 define('OUTPUT_FILE', 'sally/core/config/mimetypes.yml');
 
-require 'sally/core/lib/sfYaml/sfYaml.php';
-require 'sally/core/lib/sfYaml/sfYamlInline.php';
+require 'sally/vendor/fabpot/yaml/lib/sfYaml.php';
+require 'sally/vendor/fabpot/yaml/lib/sfYamlInline.php';
 
 $data = array();
 $in   = fopen(TYPE_FILE, 'r');
@@ -64,6 +64,11 @@ while (!feof($in)) {
 	foreach ($exts as $ext) {
 		$data[$ext] = $mime;
 	}
+}
+
+// make sure .less is defined
+if (!isset($data['less'])) {
+	$data['less'] = 'text/css';
 }
 
 ksort($data);
