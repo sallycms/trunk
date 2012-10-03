@@ -27,7 +27,8 @@ $addons   = array(
 	'webvariants/metainfo',
 	'webvariants/realurl2',
 	'webvariants/wymeditor',
-	'webvariants/rbac'
+	'webvariants/rbac',
+	'webvariants/rbac-treeview'
 );
 
 $variants = array(
