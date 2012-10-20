@@ -239,7 +239,7 @@ $platforms = array(
 );
 
 $header = <<<HEADER
--- Sally Database Dump Version 0.7
+-- Sally Database Dump Version 0.8.*
 -- Prefix sly_
 HEADER;
 
