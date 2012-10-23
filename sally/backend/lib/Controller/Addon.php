@@ -15,7 +15,7 @@ class sly_Controller_Addon extends sly_Controller_Backend implements sly_Control
 	protected function init() {
 		if ($this->init++) return;
 
-		if (!sly_post('json', 'boolean', false)) {
+		if (!$this->getRequest()->isAjax()) {
 			$layout = sly_Core::getLayout();
 			$layout->pageHeader(t('addons'));
 		}
@@ -30,7 +30,7 @@ class sly_Controller_Addon extends sly_Controller_Backend implements sly_Control
 		if ($this->addon === false) {
 			extract($this->getServices());
 
-			$addon = sly_request('addon', 'string', '');
+			$addon = $this->getRequest()->request('addon', 'string', '');
 
 			if (empty($addon)) {
 				throw new sly_Exception(t('addon_not_given'));
@@ -211,7 +211,7 @@ class sly_Controller_Addon extends sly_Controller_Backend implements sly_Control
 	}
 
 	private function sendResponse($finished = true) {
-		if (sly_post('json', 'boolean', false)) {
+		if ($this->getRequest()->isAjax()) {
 			$data  = $this->buildDataList();
 			$data  = $this->resolveParentRelationships($data);
 			$flash = sly_Core::getFlashMessage();
