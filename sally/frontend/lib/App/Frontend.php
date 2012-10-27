@@ -14,6 +14,10 @@ class sly_App_Frontend extends sly_App_Base {
 
 	private $router;
 
+	public function isBackend() {
+		return false;
+	}
+
 	public function initialize() {
 		$container = $this->getContainer();
 		$request   = $container->getRequest();
