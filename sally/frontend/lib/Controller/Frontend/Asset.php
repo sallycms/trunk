@@ -31,7 +31,7 @@ class sly_Controller_Frontend_Asset extends sly_Controller_Frontend_Base {
 		if (error_get_last()) @trigger_error('', E_USER_NOTICE);
 
 		try {
-			$errorLevel   = 0; // error_reporting(0);
+			$errorLevel   = error_reporting(0);
 			$encoding     = $this->getCacheEncoding();
 			$type         = sly_Util_Mime::getType($file);
 			$plainFile    = $service->process($file, $encoding);
