@@ -38,11 +38,30 @@ $oldVersion = $data['version'];
 llog('detected old version: '.($oldVersion ?: '(null)'));
 
 ////////////////////////////////////////////////////////////////////////////////
+// update sallyStatic.yml
+////////////////////////////////////////////////////////////////////////////////
+
+llog('updating sallyStatic.yml...');
+require 'sally/vendor/fabpot/yaml/lib/sfYaml.php';
+
+$shortVersion = ltrim($version, 'v');
+$configFile   = 'sally/core/config/sallyStatic.yml';
+$static       = sfYaml::load($configFile);
+
+list ($major, $minor, $bugfix) = explode('.', $shortVersion);
+
+$static['VERSION']['MAJOR']  = (int) $major;
+$static['VERSION']['MINOR']  = (int) $minor;
+$static['VERSION']['BUGFIX'] = (int) $bugfix;
+
+file_put_contents($configFile, sfYaml::dump($static, 3));
+
+////////////////////////////////////////////////////////////////////////////////
 // create the version changeset
 ////////////////////////////////////////////////////////////////////////////////
 
 // set new version
-$data['version'] = ltrim($version, 'v');
+$data['version'] = $shortVersion;
 
 // write it
 llog('writing new composer.json...');
@@ -51,7 +70,7 @@ file_put_contents('composer.json', $json);
 
 // commit it
 llog('committing...');
-exec('hg commit -m "version '.ltrim($version, 'v').'"');
+exec('hg commit -m "version '.$shortVersion.'"');
 
 ////////////////////////////////////////////////////////////////////////////////
 // tag it
@@ -78,7 +97,7 @@ file_put_contents('composer.json', $json);
 
 // update current patch
 llog('refreshing patch...');
-exec('hg qrefresh --message "tagging the '.ltrim($version, 'v').' release / going back to dev"');
+exec('hg qrefresh --message "tagging the '.$shortVersion.' release / going back to dev"');
 
 // and finish the patch
 llog('finishing patch...');
