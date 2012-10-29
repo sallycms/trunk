@@ -1,0 +1,75 @@
+#sly-page-login #content {
+	color: #eee;
+	font-size: 13px;
+	text-shadow: 0px 1px 0px #333;
+	position: absolute;
+	top: 0;
+	left: 250px;
+	width: 310px;
+	height: 100%;
+	background: url(../images/login_graphic_line.png) left top no-repeat;
+	padding-left: 30px;
+	padding-top: 140px;
+
+	h1 {
+		font-size: 20px;
+		padding: 0;
+		margin-bottom: 20px;
+		color: #EEE;
+	}
+
+	.sly-message.sly-warn {
+		font-size: 11px;
+		line-height: 18px;
+		color: #f8b356;
+		margin-top: 10px;
+	}
+
+	label, legend {
+		display: none;
+	}
+
+	.sly-form-row {
+		margin-top: 10px;
+
+		&:last-child {
+			margin-top: 15px;
+		}
+	}
+
+	input {
+		padding: 0 0 0 5px;
+		height: 37px;
+		width: 305px;
+		color: #777;
+		border: 0 none;
+		outline: 0 none;
+		background: url(../images/background_input_dark.spr.png) no-repeat bottom right;
+		background-position: 0px 0px;
+
+		&:focus {
+			background-position: 0px -37px;
+			color: #eee;
+		}
+	}
+
+	.sly-button {
+		float: right;
+		border: 0 none;
+		padding: 0 0 2px 0;
+		width: 90px;
+		height: 30px;
+		cursor: pointer;
+		color: #eee;
+		text-shadow: 0px 1px 0px #187080;
+		background: url(../images/background_button_login_blue.spr.png);
+
+		&:hover {
+			background-position: 0px -30px;
+		}
+
+		&:focus {
+			background-position: 0px -30px;
+		}
+	}
+}

@@ -8,6 +8,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+print '<h1>Login</h1>';
 print sly_Helper_Message::renderFlashMessage();
 
 $form = new sly_Form('index.php', 'POST', t('login_title'), '', 'sly_login_form');
@@ -16,8 +17,13 @@ $form->addHiddenValue('page', 'login');
 $form->addHiddenValue('func', 'login');
 $form->addHiddenValue('referer', $requestUri);
 
-$form->add(new sly_Form_Input_Text('username', t('username')));
-$form->add(new sly_Form_Input_Password('password', t('password')));
+$username = new sly_Form_Input_Text('username', t('username'));
+$password = new sly_Form_Input_Text('password', t('password'));
+$username->setPlaceholder('Ihr Benutzername');
+$password->setPlaceholder('Kennwort');
+
+$form->add($username);
+$form->add($password);
 
 $form->setResetButton(null);
 $form->getSubmitButton()->setAttribute('value', t('login'));

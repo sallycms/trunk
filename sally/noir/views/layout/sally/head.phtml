@@ -1,0 +1,41 @@
+<?php
+/*
+ * Copyright (c) 2012, webvariants GbR, http://www.webvariants.de
+ *
+ * This file is released under the terms of the MIT license. You can find the
+ * complete text in the attached LICENSE file or online at:
+ *
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+$user     = sly_Util_User::getCurrentUser();
+$showMenu = $user && $this->hasNavigation();
+$username = $user ? ($user->getName() ? $user->getName() : $user->getLogin()) : '';
+
+?>
+<div id="sly-head">
+	<img src="assets/images/logo.png" class="logo" alt="SallyCMS" />
+	<?php if ($showMenu): ?>
+	<a class="benutzer" href="#"><?php sly_html($username) ?></a>
+	<a class="pfeil" href="#"><img src="assets/images/login_user_dd_arrow.png" /></a>
+	<img src="assets/images/login_delimeter.png" class="delimeter" />
+
+	<div class="tabbar">
+		<div id="tabs">
+			<ul>
+				<li class="tab1"><a href="#">Standorte</a></li>
+				<li><a href="#">Kontakt</a></li>
+				<li><a href="#">Unternehmen</a></li>
+			</ul>
+		</div>
+		<a class="tabs_arrow_more"><img src="assets/images/tabs_arrow_more.png" /></a>
+	</div>
+
+	<div class="pfadangabe">
+		<p class="text">Sie sind hier:
+			<a href="#">Hauptnavigation &gt; </a>
+			<a href="#">Unternehmen</a>
+		</p>
+	</div>
+	<?php endif ?>
+</div>

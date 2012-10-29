@@ -12,7 +12,7 @@ class sly_Controller_Noir_Login extends sly_Controller_Noir implements sly_Contr
 	public function genericAction($action) {
 		$layout = sly_Core::getLayout();
 		$layout->showNavigation(false);
-		$layout->pageHeader(t('login_title'));
+		$layout->appendToTitle(t('login_title'));
 
 		if (in_array(strtolower($action), array('index', 'login', 'logout'))) {
 			$method = $action.'Action';
