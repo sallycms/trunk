@@ -12,15 +12,15 @@
  * @ingroup layout
  */
 class sly_Layout_Noir extends sly_Layout_Backend {
-	public function __construct() {
-		$locale  = sly_Core::getI18N()->getLocale();
-		$favicon = sly_Core::config()->get('noir/favicon');
-		$base    = sly_Util_HTTP::getBaseUrl(true).'/';
+	public function __construct(sly_I18N $i18n, sly_Configuration $config, sly_Request $request) {
+		$locale  = $i18n->getLocale();
+		$favicon = $config->get('noir/favicon');
+		$base    = $request->getBaseUrl(true).'/';
 
 		$this->addCSSFile('assets/less/import.less');
 		$this->setTitle(sly_Core::getProjectName().' - ');
 		$this->addMeta('robots', 'noindex,nofollow');
-		$this->setBase($base.'noir/');
+		$this->setBase($request->getAppBaseUrl().'/');
 
 		if ($favicon) {
 			$this->setFavIcon($base.$favicon);
@@ -35,7 +35,7 @@ class sly_Layout_Noir extends sly_Layout_Backend {
 	}
 
 	protected function getViewFile($file) {
-		$full = SLY_SALLYFOLDER.'/noir/views/'.$file;
+		$full = SLY_SALLYFOLDER.'/noir/views/layout/'.$file;
 		if (file_exists($full)) return $full;
 
 		return parent::getViewFile($file);

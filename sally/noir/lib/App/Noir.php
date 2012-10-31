@@ -41,7 +41,11 @@ class sly_App_Noir extends sly_App_Backend {
 	}
 
 	protected function initLayout(sly_Container $container) {
-		$container->setLayout(new sly_Layout_Noir());
+		$i18n    = $container->getI18N();
+		$config  = $container->getConfig();
+		$request = $container->getRequest();
+
+		$container->setLayout(new sly_Layout_Noir($i18n, $config, $request));
 	}
 
 	protected function initI18N(sly_Container $container, $locale) {

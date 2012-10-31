@@ -14,10 +14,10 @@ $sidebar = sly_Util_User::getCurrentUser() && $this->hasNavigation();
 <div id="sly-topbar"></div>
 <div id="sly-page">
 	<?php
-	print $this->renderView('layout/sally/head.phtml');
+	print $this->renderView('head.phtml');
 
 	if ($sidebar) {
-		print $this->renderView('layout/sally/sidebar.phtml');
+		print $this->renderView('sidebar.phtml');
 	}
 	?>
 	<div id="content">
