@@ -9,7 +9,15 @@
  */
 
 // determine application
-$slyAppName = isset($_SERVER['REDIRECT_SLYAPP']) ? strtolower($_SERVER['REDIRECT_SLYAPP']) : 'frontend';
+$slyAppName = isset($_SERVER['REDIRECT_SLYAPP']) ? strtolower($_SERVER['REDIRECT_SLYAPP'])  : 'frontend';
+
+if (isset($_SERVER['REDIRECT_SLYBASE'])) {
+	$slyAppBase = $_SERVER['REDIRECT_SLYBASE'];
+}
+else {
+	// deduct from app name
+	$slyAppBase = isset($_SERVER['REDIRECT_SLYAPP']) ? strtolower($_SERVER['REDIRECT_SLYAPP'])  : '';
+}
 
 // load core system
 require 'sally/core/master.php';
