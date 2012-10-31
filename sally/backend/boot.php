@@ -8,11 +8,13 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-// determine application
-$slyAppName = isset($_SERVER['REDIRECT_SLYAPP']) ? strtolower($_SERVER['REDIRECT_SLYAPP']) : 'frontend';
+// add the backend app
+sly_Loader::addLoadPath(SLY_SALLYFOLDER.'/backend/lib/', 'sly_');
 
-// load core system
-require 'sally/core/master.php';
+// init the app
+$app = new sly_App_Backend();
+sly_Core::setCurrentApp($app);
+$app->initialize();
 
-// load and run the requested application
-require 'sally/'.$slyAppName.'/boot.php';
+// ... and run it if not debugging
+$app->run();

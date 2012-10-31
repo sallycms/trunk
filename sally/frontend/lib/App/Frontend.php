@@ -14,6 +14,10 @@ class sly_App_Frontend extends sly_App_Base {
 
 	private $router;
 
+	public function isBackend() {
+		return false;
+	}
+
 	public function initialize() {
 		$container = $this->getContainer();
 		$request   = $container->getRequest();
@@ -93,7 +97,7 @@ class sly_App_Frontend extends sly_App_Base {
 
 		// if we got a string, wrap it in the layout and then in the response object
 		if (is_string($content)) {
-			$this->handleStringResponse($response, $content, 'frontend');
+			$this->handleStringResponse($response, $content);
 		}
 
 		// if we got a response, use that one

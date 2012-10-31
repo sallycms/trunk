@@ -8,18 +8,13 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-define('IS_SALLY_BACKEND', true);
-
-// load core system
-require '../core/master.php';
-
-// add the backend app
-sly_Loader::addLoadPath(SLY_SALLYFOLDER.'/backend/lib/', 'sly_');
+// add the app
+sly_Loader::addLoadPath(SLY_SALLYFOLDER.'/frontend/lib/', 'sly_');
 
 // init the app
-$app = new sly_App_Backend();
+$app = new sly_App_Frontend();
 sly_Core::setCurrentApp($app);
 $app->initialize();
 
-// ... and run it if not debugging
+// ... and run it
 $app->run();

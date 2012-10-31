@@ -17,9 +17,10 @@ RewriteEngine On
 # RewriteCond %{HTTP_HOST} ^example\.de$
 # RewriteRule ^(.*)$ http://www.example.de/$1 [R=301,L]
 
-# Sally Backend
-RewriteRule ^backend/?$        sally/backend/ [L,QSA]
-RewriteRule ^backend/(.*)$     sally/backend/$1 [L,QSA]
+# Sally Legacy Backend
+RewriteRule ^backend/assets/(.*?)$ sally/backend/assets/$1 [L]
+RewriteRule ^backend/?$            index.php [QSA,E=SLYAPP:backend]
+RewriteRule ^backend/(.*)$         $1 [QSA,E=SLYAPP:backend]
 
 # Assets Cache
 RewriteCond %{REQUEST_FILENAME}  \.(less|css|js|gif|jpg|jpeg|png|swf|ico|pdf|webp)$
@@ -32,4 +33,4 @@ RewriteCond %{REQUEST_FILENAME}  !-l
 RewriteCond %{REQUEST_URI}       !^assets/.*
 RewriteCond %{REQUEST_URI}       !^data/.*
 RewriteCond %{REQUEST_URI}       !^sally/.*
-RewriteRule .*                   index.php
+RewriteRule .*                   index.php [E=SLYAPP:frontend]
