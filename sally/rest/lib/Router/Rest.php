@@ -14,33 +14,18 @@
  */
 class sly_Router_Rest extends sly_Router_Base {
 	protected $request;
-	protected $formats = array(
-		'alpha' => '[a-zA-Z]+',
-		'alnum' => '[a-zA-Z0-9]+',
-		'digit' => '[0-9]+',
-		'hex'   => '[0-9a-f]+',
-		'ident' => '[a-zA-Z_][a-zA-Z0-9-_]*',
-		'int'   => '(0|[1-9][0-9]*)',
-		'lower' => '[a-z]+',
-		'upper' => '[A-Z]+'
-	);
+	protected $appBaseUrl;
 
-	public function __construct(sly_Request $request, array $routes = array()) {
+	public function __construct(sly_Request $request, $appBaseUrl, array $routes = array()) {
 		parent::__construct($routes);
+
 		$this->setRequest($request);
+		$this->appBaseUrl = $appBaseUrl;
 	}
 
 	public function setRequest(sly_Request $request) {
 		$this->request = $request;
 		$this->match   = false;
-	}
-
-	public function setParameterFormat($type, $format) {
-		if (!ctype_lower($type)) {
-			throw new sly_Exception('Parameter type must consist of only lowercase letters.');
-		}
-
-		$this->formats[$type] = $format;
 	}
 
 	public function match() {
@@ -105,30 +90,57 @@ class sly_Router_Rest extends sly_Router_Base {
 	}
 
 	public function loadConfiguration(sly_Configuration $config) {
-		$routes = $config->get('rest/routes', array());
+		$restConfig = $config->get('rest');
+		$verbs      = array(
+			'index'  => 'GET %s',
+			'get'    => 'GET %s/%s',
+			'create' => 'POST %s',
+			'update' => 'PUT %s/%s',
+			'delete' => 'DELETE %s/%s'
+		);
+
+		foreach ($restConfig['controller_routes'] as $className => $config) {
+			$base = $config['base'];
+			$id   = $config['identifier'];
+			$data = isset($routeConfig['values']) ? $routeConfig['values'] : array();
+
+			foreach ($config['verbs'] as $verb) {
+				if (!isset($verbs[$verb])) {
+					throw new sly_Exception('Unknown verb "'.$verb.'" in REST routing config for controller '.$className.'.');
+				}
+
+				$route = sprintf($verbs[$verb], $base, $id);
+
+				$data['controller'] = $className;
+				$data['action']     = $verb;
+
+				$this->addRoute($route, $data);
+			}
+		}
+
+		foreach ($restConfig['routes'] as $route) {
+			$data = isset($route['values']) ? $route['values'] : array();
+
+			$data['controller'] = $route['controller'];
+			$data['action']     = $route['action'];
+
+			$this->addRoute($route['pattern'], $data);
+		}
 	}
 
 	// transform '/:controller/' into '/(?P<controller>[a-z0-9_-])/'
 	protected function buildRegex($route) {
+		// remove method constraint
 		$route = preg_replace('#^([A-Z]+) +#', '', $route);
 		$route = rtrim($route, '/');
-		$ident = '([a-z_][a-z0-9-_]*)(?:@([a-z]+))?';
 
-		preg_match_all("#:($ident)#iu", $route, $matches, PREG_SET_ORDER);
-
-		foreach ($matches as $match) {
-			$ident = $match[2];
-			$type  = isset($match[3]) ? $match[3] : 'ident';
-
-			if (!isset($this->formats[$type])) {
-				throw new Exception('Invalid parameter type '.$type.' requested.');
-			}
-
-			$regex = sprintf('(?P<%s>%s)', $ident, $this->formats[$type]);
-			$route = str_replace($match[0], $regex, $route);
+		// make sure we anchor all REST routes on the same base URL (/rest/....)
+		if (!sly_Util_String::startsWith($route, $this->appBaseUrl)) {
+			$route = ltrim($route, '/');
+			$route = $this->appBaseUrl.'/'.$route;
 		}
 
-		return str_replace('#', '\\#', $route);
+		return parent::buildRegex($route);
 	}
 
 	protected function getMethodContraint($route) {

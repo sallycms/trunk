@@ -37,7 +37,7 @@ class sly_App_Rest extends sly_App_Base {
 		$dispatcher = $container->getDispatcher();
 
 		// find controller
-		$this->router = new sly_Router_Rest($container->getRequest());
+		$this->router = new sly_Router_Rest($container->getRequest(), '/rest'); // $container->getApplicationBaseUrl());
 		$this->router->loadConfiguration($container->getConfig());
 
 		// let addOns extend our router rule set
