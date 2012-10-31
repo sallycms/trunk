@@ -24,7 +24,7 @@ RewriteRule ^backend/(.*)$         $1 [QSA,E=SLYAPP:backend]
 
 # Sally REST Webservice
 RewriteRule ^rest/?$     index.php [QSA,E=SLYAPP:rest]
-RewriteRule ^rest/(.*)$  $1 [QSA,E=SLYAPP:rest]
+RewriteRule ^rest/(.*)$  index.php [QSA,E=SLYAPP:rest]
 
 # Assets Cache
 RewriteCond %{REQUEST_FILENAME}  \.(less|css|js|gif|jpg|jpeg|png|swf|ico|pdf|webp)$
