@@ -66,11 +66,8 @@ class sly_App_Rest extends sly_App_Base {
 			$this->getController($className);
 		}
 		catch (sly_Controller_Exception $e) {
-			if ($e->getCode() === 404) {
-				$response = new sly_Response('', 404);
-				$response->send();
-				return;
-			}
+			$ex = new Exception('Routing error: '.$e->getMessage(), 500);
+			return $this->handleControllerError($ex, $controller, $action);
 		}
 
 		// let the core know where we are
