@@ -9,10 +9,10 @@
  */
 
 // add the rest app
-sly_Loader::addLoadPath(SLY_SALLYFOLDER.'/rest/lib/', 'sly_');
+sly_Loader::addLoadPath(SLY_SALLYFOLDER.'/rest/lib/', 'sly_Rest_');
 
 // init the app
-$app = new sly_App_Rest();
+$app = new sly_Rest_App();
 sly_Core::setCurrentApp($app);
 $app->initialize();
 

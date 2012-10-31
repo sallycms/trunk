@@ -8,7 +8,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-class sly_App_Rest extends sly_App_Base {
+class sly_Rest_App extends sly_App_Base {
 	protected $request = null;
 
 	public function isBackend() {
@@ -37,13 +37,13 @@ class sly_App_Rest extends sly_App_Base {
 		$dispatcher = $container->getDispatcher();
 
 		// find controller
-		$this->router = new sly_Router_Rest($container->getRequest(), $container->getApplicationBaseUrl());
+		$this->router = new sly_Rest_Router($container->getRequest(), $container->getApplicationBaseUrl());
 		$this->router->loadConfiguration($container->getConfig());
 
 		// let addOns extend our router rule set
 		$router = $dispatcher->filter('SLY_REST_ROUTER', $this->router, array('app' => $this));
 
-		if (!($router instanceof sly_Router_Rest)) {
+		if (!($router instanceof sly_Rest_Router)) {
 			throw new LogicException('Expected a sly_Router_Rest as the result from SLY_REST_ROUTER.');
 		}
 
@@ -63,7 +63,7 @@ class sly_App_Rest extends sly_App_Base {
 		$className = $this->getControllerClass($controller);
 
 		try {
-			$this->getController($className);
+			$this->getController($className, $action);
 		}
 		catch (sly_Controller_Exception $e) {
 			$ex = new Exception('Routing error: '.$e->getMessage(), 500);

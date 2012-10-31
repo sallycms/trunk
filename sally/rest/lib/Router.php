@@ -12,7 +12,7 @@
  * @author christoph@webvariants.de
  * @since  0.8
  */
-class sly_Router_Rest extends sly_Router_Base {
+class sly_Rest_Router extends sly_Router_Base {
 	protected $request;
 	protected $appBaseUrl;
 
