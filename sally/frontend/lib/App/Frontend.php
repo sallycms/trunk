@@ -25,6 +25,9 @@ class sly_App_Frontend extends sly_App_Base {
 			exit('Bitte führe das <a href="'.sly_html($target).'">Setup</a> aus, um SallyCMS zu nutzen.');
 		}
 
+		// set timezone
+		$this->setDefaultTimezone($isSetup);
+
 		// Load the base i18n database. This database contains translations for
 		// the *backend* locales, but since it only contains error messages that
 		// are used before any frontend language detection is done (-> article
