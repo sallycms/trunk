@@ -27,6 +27,10 @@ RewriteRule ^noir/assets/(.*?)$ sally/noir/assets/$1 [L]
 RewriteRule ^noir/?$            index.php [QSA,E=SLYAPP:noir]
 RewriteRule ^noir/(.*)$         $1 [QSA,E=SLYAPP:noir]
 
+# Sally REST Webservice
+RewriteRule ^rest/?$     index.php [QSA,E=SLYAPP:rest]
+RewriteRule ^rest/(.*)$  index.php [QSA,E=SLYAPP:rest]
+
 # Assets Cache
 RewriteCond %{REQUEST_FILENAME}  \.(less|css|js|gif|jpg|jpeg|png|swf|ico|pdf|webp)$
 RewriteCond %{REQUEST_URI}       !wym_styles.css$

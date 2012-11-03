@@ -80,14 +80,11 @@ abstract class sly_App_Base implements sly_App_Interface {
 		try {
 			if (!($controller instanceof sly_Controller_Interface)) {
 				$className  = $this->getControllerClass($controller);
-				$controller = $this->getController($className);
+				$controller = $this->getController($className, $action);
 			}
 
 			// inject current request and container
-			$container = $this->getContainer();
-
-			$controller->setRequest($container->getRequest());
-			$controller->setContainer($container);
+			$this->setupController($controller);
 
 			if (!$controller->checkPermission($action)) {
 				throw new sly_Authorisation_Exception(t('page_not_allowed', $action, get_class($controller)), 403);
@@ -109,6 +106,14 @@ abstract class sly_App_Base implements sly_App_Interface {
 		catch (Exception $e) {
 			return $this->handleControllerError($e, $controller, $action);
 		}
+	}
+
+	protected function setupController(sly_Controller_Interface $controller) {
+		// inject current request and container
+		$container = $this->getContainer();
+
+		$controller->setRequest($container->getRequest());
+		$controller->setContainer($container);
 	}
 
 	/**
@@ -243,9 +248,10 @@ abstract class sly_App_Base implements sly_App_Interface {
 	 *
 	 * @throws sly_Controller_Exception
 	 * @param  string $className
+	 * @param  string $action
 	 * @return sly_Controller_Interface  the controller
 	 */
-	protected function getController($className) {
+	protected function getController($className, $action = null) {
 		static $instances = array();
 
 		if (!isset($instances[$className])) {
@@ -253,12 +259,10 @@ abstract class sly_App_Base implements sly_App_Interface {
 				throw new sly_Controller_Exception(t('unknown_controller', $className), 404);
 			}
 
-			if (class_exists('ReflectionClass')) {
-				$reflector = new ReflectionClass($className);
+			$reflector = new ReflectionClass($className);
 
-				if ($reflector->isAbstract()) {
-					throw new sly_Controller_Exception(t('unknown_controller', $className), 404);
-				}
+			if ($reflector->isAbstract()) {
+				throw new sly_Controller_Exception(t('unknown_controller', $className), 404);
 			}
 
 			$instance = new $className();
@@ -270,7 +274,32 @@ abstract class sly_App_Base implements sly_App_Interface {
 			$instances[$className] = $instance;
 		}
 
+		if ($action) {
+			$this->checkActionMethod($className, $action);
+		}
+
 		return $instances[$className];
+	}
+
+	protected function checkActionMethod($className, $action) {
+		$reflector = new ReflectionClass($className);
+		$methods   = $reflector->getMethods(ReflectionMethod::IS_PUBLIC);
+
+		foreach ($methods as $idx => $method) {
+			if ($method->getDeclaringClass()->getName() === $className) {
+				$methods[$idx] = strtolower($method->getName());
+			}
+			else {
+				unset($methods[$idx]);
+			}
+
+		}
+
+		$method = $action.'action';
+
+		if (!in_array($method, $methods)) {
+			throw new sly_Controller_Exception(t('unknown_action', $method, $className), 404);
+		}
 	}
 
 	/**
@@ -289,6 +318,18 @@ abstract class sly_App_Base implements sly_App_Interface {
 		$controller = $this->getController($className);
 
 		return $controller;
+	}
+
+	protected function setDefaultTimezone($isSetup) {
+		$timezone = $isSetup ? @date_default_timezone_get() : sly_Core::getTimezone();
+
+		// fix badly configured servers where the get function doesn't even return a guessed default timezone
+		if (empty($timezone)) {
+			$timezone = sly_Core::getTimezone();
+		}
+
+		// set the determined timezone
+		date_default_timezone_set($timezone);
 	}
 
 	abstract public function getControllerClassPrefix();
