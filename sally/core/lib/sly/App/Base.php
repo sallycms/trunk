@@ -284,27 +284,20 @@ abstract class sly_App_Base implements sly_App_Interface {
 	protected function checkActionMethod($className, $action) {
 		$reflector = new ReflectionClass($className);
 		$methods   = $reflector->getMethods(ReflectionMethod::IS_PUBLIC);
-		$parent    = $reflector->getParentClass();
 
 		foreach ($methods as $idx => $method) {
-			$methods[$idx] = $method->getName();
-		}
-
-		$own = $methods;
-
-		if ($parent) {
-			$pmethods = $parent->getMethods(ReflectionMethod::IS_PUBLIC);
-
-			foreach ($pmethods as $idx => $method) {
-				$pmethods[$idx] = $method->getName();
+			if ($method->getDeclaringClass()->getName() === $className) {
+				$methods[$idx] = strtolower($method->getName());
+			}
+			else {
+				unset($methods[$idx]);
 			}
 
-			$own = array_diff($own, $pmethods);
 		}
 
-		$method = $action.'Action';
+		$method = $action.'action';
 
-		if (!in_array($method, $own)) {
+		if (!in_array($method, $methods)) {
 			throw new sly_Controller_Exception(t('unknown_action', $method, $className), 404);
 		}
 	}
@@ -325,6 +318,18 @@ abstract class sly_App_Base implements sly_App_Interface {
 		$controller = $this->getController($className);
 
 		return $controller;
+	}
+
+	protected function setDefaultTimezone($isSetup) {
+		$timezone = $isSetup ? @date_default_timezone_get() : sly_Core::getTimezone();
+
+		// fix badly configured servers where the get function doesn't even return a guessed default timezone
+		if (empty($timezone)) {
+			$timezone = sly_Core::getTimezone();
+		}
+
+		// set the determined timezone
+		date_default_timezone_set($timezone);
 	}
 
 	abstract public function getControllerClassPrefix();
