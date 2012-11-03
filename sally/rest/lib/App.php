@@ -37,27 +37,25 @@ class sly_Rest_App extends sly_App_Base {
 		$dispatcher = $container->getDispatcher();
 
 		// find controller
-		$this->router = new sly_Rest_Router($container->getRequest(), $container->getApplicationBaseUrl());
-		$this->router->loadConfiguration($container->getConfig());
+		$router = new sly_Rest_Router($container->getApplicationBaseUrl());
+		$router->loadConfiguration($container->getConfig());
 
 		// let addOns extend our router rule set
-		$router = $dispatcher->filter('SLY_REST_ROUTER', $this->router, array('app' => $this));
+		$router  = $dispatcher->filter('SLY_REST_ROUTER', $router, array('app' => $this));
+		$request = $container->getRequest();
 
 		if (!($router instanceof sly_Rest_Router)) {
 			throw new LogicException('Expected a sly_Router_Rest as the result from SLY_REST_ROUTER.');
 		}
 
-		$this->router = $router;
-
-		// if no special controller was found, we use the article controller
-		if (!$this->router->hasMatch()) {
+		// use the router to prepare the request and setup proper query string values
+		if (!$router->match($request)) {
 			$response = new sly_Response('Invalid URL given.', 404);
-			$response->send();
-			return;
+			return $response->send();
 		}
 
-		$controller = $this->router->getController();
-		$action     = $this->router->getAction();
+		$controller = $request->request(self::CONTROLLER_PARAM, 'string', 'articles');
+		$action     = $request->request(self::ACTION_PARAM,     'string', 'index');
 
 		// test the controller
 		$className = $this->getControllerClass($controller);
