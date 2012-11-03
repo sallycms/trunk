@@ -21,9 +21,10 @@ class sly_App_Frontend extends sly_App_Base {
 	public function initialize() {
 		$container = $this->getContainer();
 		$request   = $container->getRequest();
+		$isSetup   = sly_Core::isSetup();
 
 		// Setup?
-		if (!$request->get->has('sly_asset') && sly_Core::isSetup()) {
+		if (!$request->get->has('sly_asset') && $isSetup) {
 			$target = $request->getBaseUrl(true).'/backend/';
 			$text   = 'Bitte führe das <a href="'.sly_html($target).'">Setup</a> aus, um SallyCMS zu nutzen.';
 
@@ -54,24 +55,18 @@ class sly_App_Frontend extends sly_App_Base {
 		$this->router = new sly_Router_Base();
 
 		// let addOns extend our router rule set
-		$router = $container->getDispatcher()->filter('SLY_FRONTEND_ROUTER', $this->router, array('app' => $this));
+		$router  = $container->getDispatcher()->filter('SLY_FRONTEND_ROUTER', $this->router, array('app' => $this));
+		$request = $container->getRequest(); // fetch after the event to allow to tamper with it by addOns
 
 		if (!($router instanceof sly_Router_Interface)) {
 			throw new LogicException('Expected a sly_Router_Interface as the result from SLY_FRONTEND_ROUTER.');
 		}
 
-		$this->router = $router;
+		// use the router to prepare the request and setup proper query string values
+		$router->match($request);
 
-		// if no special controller was found, we use the article controller
-		if (!$this->router->hasMatch()) {
-			$request    = $container->getRequest();
-			$controller = $request->request(self::CONTROLLER_PARAM, 'string', 'article');
-			$action     = $request->request(self::ACTION_PARAM, 'string', 'index');
-		}
-		else {
-			$controller = $this->router->getController();
-			$action     = $this->router->getAction();
-		}
+		$controller = $request->request(self::CONTROLLER_PARAM, 'string', 'article');
+		$action     = $request->request(self::ACTION_PARAM,     'string', 'index');
 
 		// test the controller
 		$className = $this->getControllerClass($controller);
@@ -127,10 +122,6 @@ class sly_App_Frontend extends sly_App_Base {
 
 	public function getCurrentAction() {
 		return $this->action;
-	}
-
-	public function getRouter() {
-		return $this->router;
 	}
 
 	protected function handleControllerError(Exception $e, $controller, $action) {
