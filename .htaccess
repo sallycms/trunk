@@ -33,4 +33,4 @@ RewriteCond %{REQUEST_FILENAME}  !-l
 RewriteCond %{REQUEST_URI}       !^assets/.*
 RewriteCond %{REQUEST_URI}       !^data/.*
 RewriteCond %{REQUEST_URI}       !^sally/.*
-RewriteRule .*                   index.php [E=SLYAPP:frontend]
+RewriteRule .*                   index.php [E=SLYAPP:frontend,E=SLYBASE:/]
