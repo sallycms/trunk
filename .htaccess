@@ -20,7 +20,7 @@ RewriteEngine On
 # Sally Legacy Backend
 RewriteRule ^backend/assets/(.*?)$ sally/backend/assets/$1 [L]
 RewriteRule ^backend/?$            index.php [QSA,E=SLYAPP:backend]
-RewriteRule ^backend/(.*)$         $1 [QSA,E=SLYAPP:backend]
+RewriteRule ^backend/(.*)$         index.php [QSA,E=SLYAPP:backend]
 
 # Assets Cache
 RewriteCond %{REQUEST_FILENAME}  \.(less|css|js|gif|jpg|jpeg|png|swf|ico|pdf|webp)$
