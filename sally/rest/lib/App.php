@@ -9,6 +9,9 @@
  */
 
 class sly_Rest_App extends sly_App_Base {
+	const CONTROLLER_PARAM = 'controller';    ///< string  the request param that contains the page
+	const ACTION_PARAM     = 'action';    ///< string  the request param that contains the action
+
 	protected $request = null;
 
 	public function isBackend() {
@@ -78,7 +81,7 @@ class sly_Rest_App extends sly_App_Base {
 		// do it, baby
 		$response = $this->dispatch($controller, $action);
 
-		if (!($retval instanceof sly_Response)) {
+		if (!($response instanceof sly_Response)) {
 			throw new LogicException('Controllers must return a Response, got '.gettype($response).'.');
 		}
 
@@ -87,7 +90,7 @@ class sly_Rest_App extends sly_App_Base {
 	}
 
 	public function getControllerClassPrefix() {
-		return 'sly_Controller_Rest';
+		return 'sly_Rest_Controller';
 	}
 
 	public function getCurrentControllerName() {
@@ -101,7 +104,8 @@ class sly_Rest_App extends sly_App_Base {
 	protected function handleControllerError(Exception $e, $controller, $action) {
 		// throw away all content (including notices and warnings)
 		while (ob_get_level()) ob_end_clean();
-
+		$r = new sly_Response($e->getMessage(), 500);
+		$r->send();
 		// TODO
 	}
 

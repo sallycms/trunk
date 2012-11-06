@@ -48,17 +48,17 @@ authorisation:
 rest:
   # shortcut definitions to save a lot of typing and typos
   controller_routes:
-    sly_Controller_Rest_Articles:
-      base: '/v1/articles'
+    Articles:
+      base: '/rest/v1/articles'
       identifier: ':id-:clang'
       verbs: [index, get, create, update, delete]
 
   routes:
     login:
-      pattern: 'POST /v1/login'
-      controller: sly_Controller_Rest_Login
+      pattern: 'POST /rest/v1/login'
+      controller: Login
       action: login
     logout:
-      pattern: 'POST /v1/logout'
-      controller: sly_Controller_Rest_Login
+      pattern: 'POST /rest/v1/logout'
+      controller: Login
       action: logout
