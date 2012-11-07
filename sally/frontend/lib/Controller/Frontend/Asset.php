@@ -108,7 +108,17 @@ class sly_Controller_Frontend_Asset extends sly_Controller_Frontend_Base {
 	 * @return string  either 'plain', 'gzip' or 'deflate'
 	 */
 	private function getCacheEncoding() {
-		$enc = isset($_SERVER['HTTP_ENCODING_CACHEDIR']) ? $_SERVER['HTTP_ENCODING_CACHEDIR'] : (isset($_SERVER['REDIRECT_HTTP_ENCODING_CACHEDIR']) ? $_SERVER['REDIRECT_HTTP_ENCODING_CACHEDIR'] : 'plain');
+		// first and second one are normal possibilities, the third one is for special cases like 1&1...
+		$keys = array('HTTP_ENCODING_CACHEDIR', 'REDIRECT_HTTP_ENCODING_CACHEDIR', 'REDIRECT_REDIRECT_HTTP_ENCODING_CACHEDIR');
+		$enc  = 'plain';
+
+		foreach ($keys as $key) {
+			if (isset($_SERVER[$key])) {
+				$enc = $_SERVER[$key];
+				break;
+			}
+		}
+
 		$enc = strtolower(trim($enc, '/'));
 
 		return in_array($enc, array('gzip', 'deflate', 'plain')) ? $enc : 'plain';
