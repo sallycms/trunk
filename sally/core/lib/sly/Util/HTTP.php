@@ -111,25 +111,29 @@ class sly_Util_HTTP {
 	public static function getBaseUrl($addScriptPath = false, $forceProtocol = null) {
 		$protocol = $forceProtocol === null ? (self::isSecure() ? 'https': 'http') : $forceProtocol;
 		$host     = self::getHost();
-		$path     = '';
-
-		if ($addScriptPath) {
-			// in CLI, the SCRIPT_NAME would be something like 'C:\xamp\php\phpunit'...
-			if (PHP_SAPI === 'cli') {
-				$path = '/sally';
-			}
-			else {
-				$path = dirname($_SERVER['SCRIPT_NAME']); // '/foo' or '/foo/sally/backend'
-
-				if (IS_SALLY_BACKEND) {
-					$path = dirname(dirname($path));
-				}
-
-				$path = str_replace('\\', '/', $path);
-			}
-		}
+		$path     = $addScriptPath ? self::getBasePath() : '';
 
 		return rtrim(sprintf('%s://%s%s', $protocol, $host, $path), '/');
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function getBasePath() {
+		// in CLI, the SCRIPT_NAME would be something like 'C:\xamp\php\phpunit'...
+		if (PHP_SAPI === 'cli') {
+			return '/sally';
+		}
+
+		$path = dirname($_SERVER['SCRIPT_NAME']); // '/foo' or '/foo/sally/backend'
+
+		if (IS_SALLY_BACKEND) {
+			$path = dirname(dirname($path));
+		}
+
+		$path = rtrim(str_replace('\\', '/', $path), '/');
+
+		return $path ? $path : '/';
 	}
 
 	/**
