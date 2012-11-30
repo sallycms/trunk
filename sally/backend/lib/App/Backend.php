@@ -250,8 +250,10 @@ class sly_App_Backend extends sly_App_Base {
 		}
 
 		if (is_string($params)) {
-			if ($params[0] === '?') $params = substr($params, 1);
-			if ($params[0] === '&') $params = substr($params, 1);
+			if (strlen($params) > 0) {
+				if ($params[0] === '?') $params = substr($params, 1);
+				if ($params[0] === '&') $params = substr($params, 1);
+			}
 
 			if (strlen($page) !== 0) {
 				$params = 'page='.urlencode($page).'&'.$params;
