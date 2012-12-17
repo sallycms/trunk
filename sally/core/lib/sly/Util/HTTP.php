@@ -112,12 +112,26 @@ class sly_Util_HTTP {
 	 * @param  boolean $addScriptPath
 	 * @return string
 	 */
-	public static function getBaseUrl($addScriptPath = false, $forceProtocol = null) {
-		$protocol = $forceProtocol === null ? (self::isSecure() ? 'https': 'http') : $forceProtocol;
+	public static function getBaseUrl($addScriptPath = false, $forceProtocol = null, $forcePort = null) {
+		$secure   = self::isSecure();
+		$protocol = $forceProtocol === null ? ($secure ? 'https': 'http') : $forceProtocol;
 		$host     = self::getHost();
 		$path     = $addScriptPath ? self::getBasePath() : '';
+		$port     = self::getPort();
 
-		return rtrim(sprintf('%s://%s%s', $protocol, $host, $path), '/');
+		if ($forcePort === true) {
+			$port = ':'.$port;
+		}
+		else {
+			if ($forcePort === false) {
+				$port = '';
+			}
+			else {
+				$port = (($port === 80 && !$secure) || ($port === 443 && $secure)) ? '' : ':'.$port;
+			}
+		}
+
+		return rtrim(sprintf('%s://%s%s%s', $protocol, $host, $port, $path), '/');
 	}
 
 	/**
@@ -202,5 +216,17 @@ class sly_Util_HTTP {
 		return
 			(isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) === 'on' || $_SERVER['HTTPS'] == 1)) ||
 			(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
+	}
+
+	public static function getPort() {
+		// return a well defined value if run on CLI to make unit tests possible
+		if (PHP_SAPI === 'cli') return 80;
+
+		$port = 80;
+
+		if     (isset($_SERVER['HTTP_X_FORWARDED_PORT']))   $port = $_SERVER['HTTP_X_FORWARDED_PORT'];
+		elseif (isset($_SERVER['SERVER_PORT']))             $port = $_SERVER['SERVER_PORT'];
+
+		return (int) $port;
 	}
 }
