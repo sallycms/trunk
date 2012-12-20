@@ -107,6 +107,9 @@ class sly_Response {
 	public function __construct($content = '', $status = 200, array $headers = array()) {
 		$this->headers = new sly_Util_Array($headers);
 		$this->cacheControl = array();
+		if ($this->hasHeader('Cache-Control')) {
+			$this->setHeader('Cache-Control', $this->getHeader('Cache-Control'));
+		}
 		$this->setContent($content);
 		$this->setStatusCode($status);
 	}
@@ -359,7 +362,7 @@ class sly_Response {
 	 * @param int $date  the date as a timestamp
 	 */
 	public function setDate($date) {
-		$this->setHeader('date', date('D, d M Y H:i:s', $date).' GMT');
+		$this->setHeader('date', gmdate('D, d M Y H:i:s', $date).' GMT');
 	}
 
 	/**
@@ -383,7 +386,7 @@ class sly_Response {
 			$this->removeHeader('expires');
 		}
 		else {
-			$this->setHeader('expires', date('D, d M Y H:i:s', $date).' GMT');
+			$this->setHeader('expires', gmdate('D, d M Y H:i:s', $date).' GMT');
 		}
 	}
 
@@ -408,7 +411,7 @@ class sly_Response {
 			$this->removeHeader('last-modified');
 		}
 		else {
-			$this->setHeader('last-modified', date('D, d M Y H:i:s', $date).' GMT');
+			$this->setHeader('last-modified', gmdate('D, d M Y H:i:s', $date).' GMT');
 		}
 	}
 
