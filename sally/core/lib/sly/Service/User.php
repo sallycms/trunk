@@ -112,8 +112,14 @@ class sly_Service_User extends sly_Service_Model_Base_Id {
 	 */
 	public function save(sly_Model_Base $user, sly_Model_User $manager = null) {
 		$manager = $this->getActor($manager, __METHOD__);
-		$event   = ($user->getId() == sly_Model_Base_Id::NEW_ID) ? 'SLY_USER_ADDED' : 'SLY_USER_UPDATED';
-		$user    = parent::save($user);
+		$event   = ($user->getId() == sly_Model_Base_Id::NEW_ID) ? 'SLY_PRE_USER_ADD' : 'SLY_PRE_USER_UPDATE';
+
+		// notify addOns
+		$this->dispatcher->notify($event, $user, compact('manager'));
+
+		// save the changes
+		$event = $event === 'SLY_PRE_USER_ADD' ? 'SLY_USER_ADDED' : 'SLY_USER_UPDATED';
+		$user  = parent::save($user);
 
 		$this->cache->flush('sly.user');
 		$this->dispatcher->notify($event, $user, array('user' => $manager));

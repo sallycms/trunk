@@ -126,12 +126,26 @@ class sly_Request {
 	 *
 	 * @param  boolean $addScriptPath
 	 * @param  mixed   $forceProtocol  a concrete protocol like 'http' or null for the current one
+	 * @param  mixed   $forcePort      a concrete port or null for the current one
 	 * @return string
 	 */
-	public function getBaseUrl($addScriptPath = false, $forceProtocol = null) {
+	public function getBaseUrl($addScriptPath = false, $forceProtocol = null, $forcePort = null) {
 		$protocol = $forceProtocol === null ? $this->getScheme() : $forceProtocol;
 		$host     = $this->getHost();
+		$port     = $this->getPort();
 		$path     = '';
+
+		if ($forcePort === true) {
+			$port = ':'.$port;
+		}
+		else {
+			if ($forcePort === false) {
+				$port = '';
+			}
+			else {
+				$port = (($port === 80 && !$secure) || ($port === 443 && $secure)) ? '' : ':'.$port;
+			}
+		}
 
 		if ($addScriptPath) {
 			// in CLI, the SCRIPT_NAME would be something like 'C:\xamp\php\phpunit'...
@@ -145,7 +159,7 @@ class sly_Request {
 			}
 		}
 
-		return rtrim(sprintf('%s://%s%s', $protocol, $host, $path), '/');
+		return rtrim(sprintf('%s://%s%s%s', $protocol, $host, $port, $path), '/');
 	}
 
 	/**

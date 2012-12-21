@@ -38,6 +38,10 @@ class sly_Util_HTTP {
 			$targetUrl = $target;
 		}
 
+		if (empty($targetUrl)) {
+			$noticeText = t('redirect_notfound');
+		}
+
 		if (empty($noticeText)) {
 			$noticeText = t('redirect_to', sly_html($targetUrl));
 		}
@@ -120,8 +124,8 @@ class sly_Util_HTTP {
 	 * @param  mixed   $forceProtocol  a concrete protocol like 'http' or null for the current one
 	 * @return string
 	 */
-	public static function getBaseUrl($addScriptPath = false, $forceProtocol = null) {
-		return sly_Core::getRequest()->getBaseUrl($addScriptPath, $forceProtocol);
+	public static function getBaseUrl($addScriptPath = false, $forceProtocol = null, $forcePort = null) {
+		return sly_Core::getRequest()->getBaseUrl($addScriptPath, $forceProtocol, $forcePort);
 	}
 
 	/**
@@ -176,5 +180,17 @@ class sly_Util_HTTP {
 	 */
 	public static function isSecure() {
 		return sly_Core::getRequest()->isSecure();
+	}
+
+	public static function getPort() {
+		// return a well defined value if run on CLI to make unit tests possible
+		if (PHP_SAPI === 'cli') return 80;
+
+		$port = 80;
+
+		if     (isset($_SERVER['HTTP_X_FORWARDED_PORT']))   $port = $_SERVER['HTTP_X_FORWARDED_PORT'];
+		elseif (isset($_SERVER['SERVER_PORT']))             $port = $_SERVER['SERVER_PORT'];
+
+		return (int) $port;
 	}
 }
